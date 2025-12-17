@@ -6,7 +6,7 @@ import { createReport, createTaskResults } from '../../../../lib/airtable-tuneup
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { reportData, taskResults } = body;
+    const { reportData, taskResults, sectionNotes } = body;
 
     console.log('[API] Request received');
 
@@ -27,8 +27,11 @@ export async function POST(request) {
 
     console.log('[API] Creating report...');
     
-    // Step 1: Create the report
-    const report = await createReport(reportData);
+    // Step 1: Create the report with section notes
+    const report = await createReport({
+      ...reportData,
+      sectionNotes,
+    });
     console.log('[API] Report created:', report.id);
     
     // Step 2: Create task results linked to this report
