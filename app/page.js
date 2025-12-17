@@ -23,17 +23,17 @@ const TASKS = [
   { number: 17, section: "HVAC & Air Quality", name: "HVAC Filter Condition & Age", description: "Check filter condition and unusual system age" },
   { number: 18, section: "HVAC & Air Quality", name: "HVAC System Age & Early Warning", description: "Note system age and unusual noises" },
   { number: 19, section: "HVAC & Air Quality", name: "Dryer Vent Fire Prevention", description: "Inspect dryer vent for lint buildup" },
-  { number: 20, section: "HVAC & Air Quality", name: "Kitchen Exhaust Grease Buildup", description: "Check range hood filter for grease accumulation" },
+  { number: 20, section: "Kitchen & Appliances", name: "Kitchen Exhaust Grease Buildup", description: "Check range hood filter for grease accumulation" },
   { number: 21, section: "HVAC & Air Quality", name: "Indoor Air Quality Assessment", description: "Check for musty odors, visible mold" },
   { number: 22, section: "Safety Systems", name: "Smoke Detector Functionality", description: "Test all smoke detectors to ensure they work" },
   { number: 23, section: "Safety Systems", name: "Carbon Monoxide Detector Check", description: "Test CO detectors near bedrooms and gas appliances" },
   { number: 24, section: "Safety Systems", name: "Stairway Safety & Lighting", description: "Check stair lighting and railing stability" },
   { number: 25, section: "Safety Systems", name: "Trip Hazard Scan", description: "Look for loose rugs, cords, or uneven flooring" },
   { number: 26, section: "Safety Systems", name: "Garage Door Safety Sensor", description: "Test auto-reverse safety mechanism" },
-  { number: 27, section: "Energy & Efficiency", name: "Window & Door Draft Check", description: "Feel for air leaks around windows and doors" },
-  { number: 28, section: "Energy & Efficiency", name: "Attic Insulation Visual Check", description: "Inspect attic for adequate insulation coverage" },
-  { number: 29, section: "Energy & Efficiency", name: "Thermostat Accuracy", description: "Verify thermostat displays accurate temperature" },
-  { number: 30, section: "Energy & Efficiency", name: "Light Bulb Energy Efficiency", description: "Note which bulbs could be upgraded to LED" },
+  { number: 27, section: "Bathrooms & Wet Areas", name: "Window & Door Draft Check", description: "Feel for air leaks around windows and doors" },
+  { number: 28, section: "Bathrooms & Wet Areas", name: "Attic Insulation Visual Check", description: "Inspect attic for adequate insulation coverage" },
+  { number: 29, section: "HVAC & Air Quality", name: "Thermostat Accuracy", description: "Verify thermostat displays accurate temperature" },
+  { number: 30, section: "Kitchen & Appliances", name: "Light Bulb Energy Efficiency", description: "Note which bulbs could be upgraded to LED" },
 ];
 
 export default function TechnicianForm() {
@@ -77,7 +77,7 @@ export default function TechnicianForm() {
         taskDescription: task.description,
         status: taskStatuses[task.number] || 'Good',
         notes: taskNotes[task.number] || '',
-        actionType: 'none',
+        actionType: (taskStatuses[task.number] === 'Good' || !taskStatuses[task.number]) ? 'None' : 'Handld',
         actionLink: '',
         actionText: '',
       }));
