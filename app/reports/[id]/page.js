@@ -374,8 +374,7 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
                               fontWeight: '700',
                               boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                               transition: 'all 0.2s'
-                            }}
-                          >
+                            }}>
                             🛠️ Get {serviceAction.service} Handld
                           </a>
                         </div>
