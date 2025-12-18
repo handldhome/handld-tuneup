@@ -68,12 +68,10 @@ export default function ReportViewer() {
     );
   }
 
-  // Filter tasks to show only Monitor, Repair Soon, and Urgent
   const priorityTasks = tasks.filter(task => 
     task.status === 'Monitor' || task.status === 'Repair Soon' || task.status === 'Urgent'
   );
 
-  // Group tasks by section
   const tasksBySection = priorityTasks.reduce((acc, task) => {
     if (!acc[task.section]) acc[task.section] = [];
     acc[task.section].push(task);
@@ -91,7 +89,6 @@ export default function ReportViewer() {
     <div style={{ minHeight: '100vh', background: '#FBF7F0' }}>
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
         
-        {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <img src="/Handld_Logo_Transparent.png" alt="Handld" style={{ width: '200px', marginBottom: '16px' }} />
           <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '8px', color: '#2A54A1' }}>
@@ -108,7 +105,6 @@ export default function ReportViewer() {
           </div>
         </div>
 
-        {/* Summary Stats */}
         <div className="card" style={{ background: 'linear-gradient(135deg, #2A54A1 0%, #1e3a8a 100%)', color: 'white', marginBottom: '24px' }}>
           <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' }}>
             Inspection Summary
@@ -133,7 +129,6 @@ export default function ReportViewer() {
           </div>
         </div>
 
-        {/* Priority Items */}
         {priorityTasks.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', padding: '40px' }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>✓</div>
@@ -200,14 +195,17 @@ export default function ReportViewer() {
                           href={task.actionLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="button"
-                         style={{ 
+                          style={{ 
                             display: 'inline-block',
                             fontSize: '14px', 
                             padding: '10px 20px',
                             textDecoration: 'none',
-                            background: '#2A54A1'
-                          }}>
+                            background: '#2A54A1',
+                            color: 'white',
+                            borderRadius: '8px',
+                            fontWeight: '600'
+                          }}
+                        >
                           {task.actionText || 'Schedule Service'}
                         </a>
                       </div>
@@ -215,7 +213,6 @@ export default function ReportViewer() {
                   </div>
                 ))}
 
-                {/* Section Notes */}
                 {report.sectionNotes && report.sectionNotes[section] && (
                   <div style={{ 
                     background: '#f0f9ff', 
@@ -237,7 +234,6 @@ export default function ReportViewer() {
           </>
         )}
 
-        {/* Footer CTA */}
         <div className="card" style={{ background: '#2A54A1', color: 'white', textAlign: 'center', marginTop: '32px' }}>
           <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '8px' }}>
             Questions About Your Report?
@@ -247,20 +243,20 @@ export default function ReportViewer() {
           </p>
           
             href="mailto:support@handldhome.com"
-            className="button"
             style={{ 
               background: 'white',
               color: '#2A54A1',
               textDecoration: 'none',
               display: 'inline-block',
-              fontWeight: '600'
+              fontWeight: '600',
+              padding: '12px 24px',
+              borderRadius: '8px'
             }}
           >
             Contact Handld Home
           </a>
         </div>
 
-        {/* Footer Info */}
         <div style={{ textAlign: 'center', marginTop: '32px', paddingTop: '20px', borderTop: '1px solid #e5e7eb', color: '#999', fontSize: '14px' }}>
           <p>Inspected by: {report.technicianName}</p>
           <p style={{ marginTop: '8px' }}>
