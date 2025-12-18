@@ -723,16 +723,22 @@ export default function TechnicianForm() {
     );
   }
 
-  // Success Screen
+ // Success Screen
   if (success) {
     return (
       <div style={{ minHeight: '100vh', background: '#FBF7F0', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center', maxWidth: '500px' }}>
+          <img src="/Handld_Logo_Transparent.png" alt="Handld" style={{ width: '150px', marginBottom: '24px' }} />
           <div style={{ fontSize: '64px', marginBottom: '16px' }}>✓</div>
-          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#10b981', marginBottom: '8px' }}>
-            Report Submitted!
+          <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#2A54A1', marginBottom: '16px' }}>
+            Handld TuneUp Report Submission Successful!
           </h1>
-          <p style={{ color: '#666' }}>Redirecting...</p>
+          <p style={{ fontSize: '18px', color: '#666', marginBottom: '8px' }}>
+            Thank you for your hard work.
+          </p>
+          <p style={{ fontSize: '14px', color: '#999' }}>
+            Redirecting to new form in 5 seconds...
+          </p>
         </div>
       </div>
     );
