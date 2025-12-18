@@ -65,8 +65,10 @@ const TECHNICIAN_OPTIONS = [
   "Carlos Santos",
 ];
 
+const STORAGE_KEY = 'handld-tuneup-progress';
+
 export default function TechnicianForm() {
-  const [currentStep, setCurrentStep] = useState('customer-info'); // 'customer-info', 'tasks', 'section-notes', 'review'
+  const [currentStep, setCurrentStep] = useState('customer-info');
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   
@@ -86,6 +88,43 @@ export default function TechnicianForm() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+
+  // Load saved progress on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const data = JSON.parse(saved);
+        setCustomerInfo(data.customerInfo || customerInfo);
+        setTaskStatuses(data.taskStatuses || {});
+        setTaskNotes(data.taskNotes || {});
+        setSectionNotes(data.sectionNotes || {});
+        setCurrentStep(data.currentStep || 'customer-info');
+        setCurrentTaskIndex(data.currentTaskIndex || 0);
+        // Note: We don't restore photos from localStorage - they need to be re-selected
+      }
+    } catch (err) {
+      console.error('Failed to load saved progress:', err);
+    }
+  }, []);
+
+  // Auto-save progress whenever state changes
+  useEffect(() => {
+    try {
+      const dataToSave = {
+        customerInfo,
+        taskStatuses,
+        taskNotes,
+        sectionNotes,
+        currentStep,
+        currentTaskIndex,
+        timestamp: new Date().toISOString(),
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (err) {
+      console.error('Failed to save progress:', err);
+    }
+  }, [customerInfo, taskStatuses, taskNotes, sectionNotes, currentStep, currentTaskIndex]);
 
   const currentTask = TASKS[currentTaskIndex];
   const isLastTask = currentTaskIndex === TASKS.length - 1;
@@ -189,6 +228,10 @@ export default function TechnicianForm() {
       }
 
       const data = await response.json();
+      
+      // Clear saved progress
+      localStorage.removeItem(STORAGE_KEY);
+      
       setSuccess(true);
       
       // Reset form after 3 seconds
@@ -430,6 +473,11 @@ export default function TechnicianForm() {
                         {taskNotes[task.number]}
                       </div>
                     )}
+                    {taskPhotos[task.number] && taskPhotos[task.number].length > 0 && (
+                      <div style={{ fontSize: '12px', color: '#10b981', marginTop: '4px' }}>
+                        ✓ {taskPhotos[task.number].length} photo(s) attached
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -579,10 +627,10 @@ export default function TechnicianForm() {
                 Photos (optional)
               </label>
               <input
+                key={`photo-${currentTask.number}`}
                 type="file"
                 accept="image/*,video/*"
                 multiple
-                capture="environment"
                 onChange={(e) => handlePhotoUpload(currentTask.number, Array.from(e.target.files))}
                 style={{ width: '100%', padding: '12px', border: '2px dashed #2A54A1', borderRadius: '8px', cursor: 'pointer' }}
               />
