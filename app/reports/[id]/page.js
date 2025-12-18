@@ -39,37 +39,37 @@ const TASK_DETAILS = {
 };
 
 const SERVICE_ACTIONS = {
-  "Gutter & Downspout Flow": { service: "Gutter Cleaning", link: "https://handldhome.com/services/gutter-cleaning" },
-  "Foundation Perimeter Inspection": { service: "Foundation Repair Referral", link: "https://handldhome.com/services/foundation-repair" },
-  "Exterior Wall Integrity": { service: "Stucco/Siding Repair", link: "https://handldhome.com/services/exterior-repair" },
-  "Home Exterior & Roof": { service: "Pressure Washing", link: "https://handldhome.com/services/pressure-washing" },
-  "Walkway & Driveway Surface": { service: "Pressure Washing", link: "https://handldhome.com/services/pressure-washing" },
-  "Exterior Security Lighting": { service: "Lighting Installation", link: "https://handldhome.com/services/electrical" },
-  "Window & Door Weatherstripping": { service: "Weatherstripping Service", link: "https://handldhome.com/services/weatherstripping" },
-  "Garage Door Safety Sensor": { service: "Garage Door Repair", link: "https://handldhome.com/services/garage-door" },
-  "Electrical Panel Visual Inspection": { service: "Panel Labeling Service", link: "https://handldhome.com/services/electrical" },
-  "Outlet & Switch Safety": { service: "Electrical Repair", link: "https://handldhome.com/services/electrical" },
-  "GFCI Outlet Protection": { service: "GFCI Installation", link: "https://handldhome.com/services/electrical" },
-  "Light Bulb Energy Efficiency": { service: "LED Conversion", link: "https://handldhome.com/services/lighting" },
-  "Water Heater Condition & Age": { service: "Water Heater Replacement", link: "https://handldhome.com/services/plumbing" },
-  "Under-Sink Leak Detection": { service: "Leak Repair", link: "https://handldhome.com/services/plumbing" },
-  "Faucet & Fixture Efficiency": { service: "Faucet Repair", link: "https://handldhome.com/services/plumbing" },
-  "Toilet Water Loss Prevention": { service: "Toilet Repair", link: "https://handldhome.com/services/plumbing" },
-  "Shower Head Performance": { service: "Shower Head Replacement", link: "https://handldhome.com/services/plumbing" },
-  "Water Filter Status": { service: "Filter Replacement", link: "https://handldhome.com/services/plumbing" },
-  "Garbage Disposal Function": { service: "Disposal Repair", link: "https://handldhome.com/services/plumbing" },
-  "Dishwasher Filter & Seal": { service: "Appliance Service", link: "https://handldhome.com/services/appliances" },
-  "Kitchen Exhaust Grease Buildup": { service: "Hood Cleaning", link: "https://handldhome.com/services/cleaning" },
-  "HVAC Filter Condition": { service: "Filter Replacement", link: "https://handldhome.com/services/hvac" },
-  "HVAC System Age & Early Warning": { service: "HVAC Maintenance", link: "https://handldhome.com/services/hvac" },
-  "Dryer Vent Fire Prevention": { service: "Dryer Vent Cleaning", link: "https://handldhome.com/services/dryer-vent" },
-  "Attic Insulation Visual Check": { service: "Insulation Service", link: "https://handldhome.com/services/insulation" },
-  "Ventilation & Moisture": { service: "Ventilation Repair", link: "https://handldhome.com/services/hvac" },
-  "Smoke Detector Functionality": { service: "Detector Replacement", link: "https://handldhome.com/services/safety" },
-  "Carbon Monoxide Detector Check": { service: "CO Detector Installation", link: "https://handldhome.com/services/safety" },
-  "Stairway Safety & Lighting": { service: "Safety Upgrades", link: "https://handldhome.com/services/handyman" },
-  "Trip Hazard Scan": { service: "Handyman Service", link: "https://handldhome.com/services/handyman" },
-  "Door Lock & Deadbolt Function": { service: "Lock Service", link: "https://handldhome.com/services/handyman" },
+  "Gutter & Downspout Flow": { service: "Gutter Cleaning", link: "#", type: "Handld" },
+  "Foundation Perimeter Inspection": { service: "Foundation Repair Referral", link: "#", type: "Referral" },
+  "Exterior Wall Integrity": { service: "Stucco/Siding Repair", link: "#", type: "Handld" },
+  "Home Exterior & Roof": { service: "Pressure Washing", link: "#", type: "Handld" },
+  "Walkway & Driveway Surface": { service: "Pressure Washing", link: "#", type: "Handld" },
+  "Exterior Security Lighting": { service: "Lighting Installation", link: "#", type: "Handld" },
+  "Window & Door Weatherstripping": { service: "Weatherstripping Service", link: "#", type: "Handld" },
+  "Garage Door Safety Sensor": { service: "Garage Door Repair", link: "#", type: "Referral" },
+  "Electrical Panel Visual Inspection": { service: "Panel Labeling Service", link: "#", type: "Handld" },
+  "Outlet & Switch Safety": { service: "Electrical Repair", link: "#", type: "Handld" },
+  "GFCI Outlet Protection": { service: "GFCI Installation", link: "#", type: "Handld" },
+  "Light Bulb Energy Efficiency": { service: "LED Conversion", link: "#", type: "Handld" },
+  "Water Heater Condition & Age": { service: "Water Heater Replacement", link: "#", type: "Referral" },
+  "Under-Sink Leak Detection": { service: "Leak Repair", link: "#", type: "Handld" },
+  "Faucet & Fixture Efficiency": { service: "Faucet Repair", link: "#", type: "Handld" },
+  "Toilet Water Loss Prevention": { service: "Toilet Repair", link: "#", type: "Handld" },
+  "Shower Head Performance": { service: "Shower Head Replacement", link: "#", type: "Handld" },
+  "Water Filter Status": { service: "Filter Replacement", link: "#", type: "Handld" },
+  "Garbage Disposal Function": { service: "Disposal Repair", link: "#", type: "Handld" },
+  "Dishwasher Filter & Seal": { service: "Appliance Service", link: "#", type: "Referral" },
+  "Kitchen Exhaust Grease Buildup": { service: "Hood Cleaning", link: "#", type: "Handld" },
+  "HVAC Filter Condition": { service: "Filter Replacement", link: "#", type: "Handld" },
+  "HVAC System Age & Early Warning": { service: "HVAC Maintenance", link: "#", type: "Referral" },
+  "Dryer Vent Fire Prevention": { service: "Dryer Vent Cleaning", link: "#", type: "Handld" },
+  "Attic Insulation Visual Check": { service: "Insulation Service", link: "#", type: "Referral" },
+  "Ventilation & Moisture": { service: "Ventilation Repair", link: "#", type: "Handld" },
+  "Smoke Detector Functionality": { service: "Detector Replacement", link: "#", type: "Handld" },
+  "Carbon Monoxide Detector Check": { service: "CO Detector Installation", link: "#", type: "Handld" },
+  "Stairway Safety & Lighting": { service: "Safety Upgrades", link: "#", type: "Handld" },
+  "Trip Hazard Scan": { service: "Handyman Service", link: "#", type: "Handld" },
+  "Door Lock & Deadbolt Function": { service: "Lock Service", link: "#", type: "Handld" },
 };
 
 export default function ReportViewer() {
@@ -80,6 +80,7 @@ export default function ReportViewer() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [expandedTask, setExpandedTask] = useState(null);
 
   useEffect(() => {
     async function fetchReport() {
@@ -107,34 +108,131 @@ export default function ReportViewer() {
   }, [reportId]);
 
   const generatePunchList = () => {
-    const priorityTasks = tasks.filter(task => task.status !== 'Good');
+    const priorityTasks = tasks.filter(task => 
+      task.status === 'Repair Soon' || task.status === 'Urgent'
+    );
 
-    let pdfContent = `HANDYMAN PUNCH LIST
-${report.customerName}
-${report.address}, ${report.city}
-Inspection Date: ${new Date(report.dateCompleted).toLocaleDateString()}
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Handyman Punch List - ${report.customerName}</title>
+  <style>
+    @media print {
+      @page { margin: 0.5in; }
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #FBF7F0;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #2A54A1;
+    }
+    .logo {
+      width: 200px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #2A54A1;
+      font-size: 32px;
+      margin: 0 0 10px 0;
+    }
+    .info {
+      color: #666;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .task {
+      background: white;
+      padding: 20px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      border-left: 5px solid #f59e0b;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .task.urgent {
+      border-left-color: #ef4444;
+    }
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+    .task-title {
+      font-weight: bold;
+      font-size: 18px;
+      color: #1f2937;
+      flex: 1;
+    }
+    .task-status {
+      background: #f59e0b;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 12px;
+    }
+    .task-status.urgent {
+      background: #ef4444;
+    }
+    .task-notes {
+      color: #4b5563;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-top: 8px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 6px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid #e5e7eb;
+      color: #999;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="/Handld_Logo_Transparent.png" alt="Handld" class="logo">
+    <h1>Handyman Punch List</h1>
+    <div class="info">${report.customerName}</div>
+    <div class="info">${report.address}, ${report.city}</div>
+    <div class="info">Inspection Date: ${new Date(report.dateCompleted).toLocaleDateString()}</div>
+  </div>
 
-ITEMS REQUIRING ATTENTION:
-`;
+  ${priorityTasks.map(task => `
+    <div class="task ${task.status === 'Urgent' ? 'urgent' : ''}">
+      <div class="task-header">
+        <div class="task-title">#${task.taskNumber}: ${task.taskName}</div>
+        <div class="task-status ${task.status === 'Urgent' ? 'urgent' : ''}">${task.status}</div>
+      </div>
+      ${task.notes ? `<div class="task-notes"><strong>Notes:</strong> ${task.notes}</div>` : ''}
+    </div>
+  `).join('')}
 
-    priorityTasks.forEach(task => {
-      pdfContent += `
-[${task.status.toUpperCase()}] ${task.taskName}
-${task.taskDescription}
-${task.notes ? `Notes: ${task.notes}` : ''}
----
-`;
-    });
+  <div class="footer">
+    <p>© ${new Date().getFullYear()} Handld Home Services</p>
+  </div>
+</body>
+</html>
+    `;
 
-    const blob = new Blob([pdfContent], { type: 'text/plain' });
+    const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Handld-Punch-List-${report.customerName.replace(/\s+/g, '-')}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+    window.open(url, '_blank');
+    setTimeout(() => window.URL.revokeObjectURL(url), 100);
   };
 
   if (loading) {
@@ -168,7 +266,7 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
   }
 
   const priorityTasks = tasks.filter(task => 
-    task.status === 'Monitor' || task.status === 'Repair Soon' || task.status === 'Urgent'
+    task.status === 'Repair Soon' || task.status === 'Urgent'
   );
 
   const tasksBySection = priorityTasks.reduce((acc, task) => {
@@ -193,71 +291,72 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
 
   return (
     <div style={{ minHeight: '100vh', background: '#FBF7F0' }}>
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '16px' }}>
         
-        <div style={{ textAlign: 'center', marginBottom: '40px', paddingTop: '20px' }}>
-          <img src="/Handld_Logo_Transparent.png" alt="Handld" style={{ width: '220px', marginBottom: '24px' }} />
-          <h1 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '12px', color: '#2A54A1' }}>
+        <div style={{ textAlign: 'center', marginBottom: '24px', paddingTop: '16px' }}>
+          <img src="/Handld_Logo_Transparent.png" alt="Handld" style={{ width: '200px', marginBottom: '20px' }} />
+          <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '8px', color: '#2A54A1' }}>
             Handld Home TuneUp
           </h1>
-          <div style={{ fontSize: '20px', color: '#666', marginBottom: '8px', fontWeight: '600' }}>
+          <div style={{ fontSize: '18px', color: '#666', marginBottom: '6px', fontWeight: '600' }}>
             {report.customerName}
           </div>
-          <div style={{ fontSize: '16px', color: '#999' }}>
+          <div style={{ fontSize: '15px', color: '#999' }}>
             {report.address}, {report.city}
           </div>
-          <div style={{ fontSize: '14px', color: '#999', marginTop: '4px' }}>
+          <div style={{ fontSize: '13px', color: '#999', marginTop: '4px' }}>
             Completed: {new Date(report.dateCompleted).toLocaleDateString()}
           </div>
         </div>
 
         <div className="card" style={{ 
           background: 'white',
-          marginBottom: '32px',
+          marginBottom: '24px',
           boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-          border: '2px solid #2A54A1'
+          border: '2px solid #2A54A1',
+          padding: '20px'
         }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '24px', color: '#2A54A1', textAlign: 'center' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '20px', color: '#2A54A1', textAlign: 'center' }}>
             Inspection Summary
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px' }}>
-            <div style={{ textAlign: 'center', padding: '20px', background: '#d1fae5', borderRadius: '12px' }}>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#10b981' }}>{report.totalGood}</div>
-              <div style={{ fontSize: '16px', fontWeight: '600', color: '#059669', marginBottom: '4px' }}>Good</div>
-              <div style={{ fontSize: '12px', color: '#047857' }}>Everything looks great!</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px' }}>
+            <div style={{ textAlign: 'center', padding: '16px', background: '#d1fae5', borderRadius: '12px' }}>
+              <div style={{ fontSize: '40px', fontWeight: 'bold', color: '#10b981' }}>{report.totalGood}</div>
+              <div style={{ fontSize: '15px', fontWeight: '600', color: '#059669', marginBottom: '2px' }}>Good</div>
+              <div style={{ fontSize: '11px', color: '#047857' }}>Everything looks great!</div>
             </div>
-            <div style={{ textAlign: 'center', padding: '20px', background: '#dbeafe', borderRadius: '12px' }}>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#3b82f6' }}>{report.totalMonitor}</div>
-              <div style={{ fontSize: '16px', fontWeight: '600', color: '#2563eb', marginBottom: '4px' }}>Monitor</div>
-              <div style={{ fontSize: '12px', color: '#1d4ed8' }}>Keep an eye on these</div>
+            <div style={{ textAlign: 'center', padding: '16px', background: '#dbeafe', borderRadius: '12px' }}>
+              <div style={{ fontSize: '40px', fontWeight: 'bold', color: '#3b82f6' }}>{report.totalMonitor}</div>
+              <div style={{ fontSize: '15px', fontWeight: '600', color: '#2563eb', marginBottom: '2px' }}>Monitor</div>
+              <div style={{ fontSize: '11px', color: '#1d4ed8' }}>Keep an eye on these</div>
             </div>
-            <div style={{ textAlign: 'center', padding: '20px', background: '#fef3c7', borderRadius: '12px' }}>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#f59e0b' }}>{report.totalRepairSoon}</div>
-              <div style={{ fontSize: '16px', fontWeight: '600', color: '#d97706', marginBottom: '4px' }}>Repair Soon</div>
-              <div style={{ fontSize: '12px', color: '#b45309' }}>Address in 2-3 months</div>
+            <div style={{ textAlign: 'center', padding: '16px', background: '#fef3c7', borderRadius: '12px' }}>
+              <div style={{ fontSize: '40px', fontWeight: 'bold', color: '#f59e0b' }}>{report.totalRepairSoon}</div>
+              <div style={{ fontSize: '15px', fontWeight: '600', color: '#d97706', marginBottom: '2px' }}>Repair Soon</div>
+              <div style={{ fontSize: '11px', color: '#b45309' }}>Address in 2-3 months</div>
             </div>
-            <div style={{ textAlign: 'center', padding: '20px', background: '#fee2e2', borderRadius: '12px' }}>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#ef4444' }}>{report.totalUrgent}</div>
-              <div style={{ fontSize: '16px', fontWeight: '600', color: '#dc2626', marginBottom: '4px' }}>Urgent</div>
-              <div style={{ fontSize: '12px', color: '#b91c1c' }}>Needs immediate attention</div>
+            <div style={{ textAlign: 'center', padding: '16px', background: '#fee2e2', borderRadius: '12px' }}>
+              <div style={{ fontSize: '40px', fontWeight: 'bold', color: '#ef4444' }}>{report.totalUrgent}</div>
+              <div style={{ fontSize: '15px', fontWeight: '600', color: '#dc2626', marginBottom: '2px' }}>Urgent</div>
+              <div style={{ fontSize: '11px', color: '#b91c1c' }}>Needs immediate attention</div>
             </div>
           </div>
         </div>
 
         {priorityTasks.length === 0 ? (
-          <div className="card" style={{ textAlign: 'center', padding: '60px 40px', background: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-            <div style={{ fontSize: '64px', marginBottom: '20px' }}>✓</div>
-            <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#10b981', marginBottom: '12px' }}>
+          <div className="card" style={{ textAlign: 'center', padding: '50px 30px', background: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+            <div style={{ fontSize: '56px', marginBottom: '16px' }}>✓</div>
+            <h2 style={{ fontSize: '26px', fontWeight: 'bold', color: '#10b981', marginBottom: '10px' }}>
               All Systems Good!
             </h2>
-            <p style={{ color: '#666', fontSize: '16px' }}>
-              No priority items found. Your home is in great shape!
+            <p style={{ color: '#666', fontSize: '15px' }}>
+              No urgent or repair-soon items found. Your home is in great shape!
             </p>
           </div>
         ) : (
           <>
-            <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-              <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#2A54A1' }}>
+            <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+              <h2 style={{ fontSize: '26px', fontWeight: 'bold', color: '#2A54A1' }}>
                 Items Requiring Attention
               </h2>
               <button
@@ -265,7 +364,7 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
                 style={{
                   background: '#2A54A1',
                   color: 'white',
-                  padding: '12px 24px',
+                  padding: '10px 20px',
                   borderRadius: '8px',
                   border: 'none',
                   fontSize: '14px',
@@ -279,14 +378,14 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
             </div>
 
             {Object.entries(tasksBySection).map(([section, sectionTasks]) => (
-              <div key={section} className="card" style={{ marginBottom: '24px', background: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+              <div key={section} className="card" style={{ marginBottom: '20px', background: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '20px' }}>
                 <h3 style={{ 
-                  fontSize: '22px', 
+                  fontSize: '20px', 
                   fontWeight: 'bold', 
-                  marginBottom: '20px', 
+                  marginBottom: '16px', 
                   color: '#2A54A1', 
                   borderBottom: '3px solid #2A54A1', 
-                  paddingBottom: '12px' 
+                  paddingBottom: '10px' 
                 }}>
                   {section}
                 </h3>
@@ -296,29 +395,29 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
                   
                   return (
                     <div key={task.id} style={{ 
-                      marginBottom: '24px', 
-                      paddingBottom: '24px', 
+                      marginBottom: '20px', 
+                      paddingBottom: '20px', 
                       borderBottom: '2px solid #e5e7eb',
                       background: getStatusBgColor(task.status),
-                      padding: '20px',
-                      borderRadius: '12px',
-                      borderLeft: `6px solid ${getStatusColor(task.status)}`
+                      padding: '16px',
+                      borderRadius: '10px',
+                      borderLeft: `5px solid ${getStatusColor(task.status)}`
                     }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
                         <div style={{ flex: 1, minWidth: '200px' }}>
-                          <div style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '8px', color: '#1f2937' }}>
+                          <div style={{ fontWeight: 'bold', fontSize: '17px', marginBottom: '6px', color: '#1f2937' }}>
                             #{task.taskNumber}: {task.taskName}
                           </div>
-                          <div style={{ fontSize: '15px', color: '#4b5563', marginBottom: '12px', lineHeight: '1.6' }}>
+                          <div style={{ fontSize: '14px', color: '#4b5563', marginBottom: '10px', lineHeight: '1.5' }}>
                             {TASK_DETAILS[task.taskNumber] || task.taskDescription}
                           </div>
                         </div>
                         <span style={{ 
-                          marginLeft: '16px', 
+                          marginLeft: '12px', 
                           flexShrink: 0,
-                          padding: '6px 16px',
-                          borderRadius: '20px',
-                          fontSize: '14px',
+                          padding: '5px 14px',
+                          borderRadius: '18px',
+                          fontSize: '13px',
                           fontWeight: '700',
                           background: getStatusColor(task.status),
                           color: 'white',
@@ -331,10 +430,10 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
                       {task.notes && (
                         <div style={{ 
                           background: 'white', 
-                          padding: '16px', 
+                          padding: '14px', 
                           borderRadius: '8px',
-                          fontSize: '14px',
-                          marginTop: '12px',
+                          fontSize: '13px',
+                          marginTop: '10px',
                           border: '1px solid #d1d5db',
                           boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
                         }}>
@@ -343,15 +442,17 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
                       )}
 
                       {serviceAction && (
-                        <div style={{ marginTop: '16px' }}>
+                        <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
                           <a
                             href={serviceAction.link}
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{ 
-                              display: 'inline-block',
-                              fontSize: '15px', 
-                              padding: '12px 24px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              fontSize: '14px', 
+                              padding: '10px 20px',
                               textDecoration: 'none',
                               background: '#2A54A1',
                               color: 'white',
@@ -360,7 +461,10 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
                               boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
                             }}
                           >
-                            Get {serviceAction.service} Handld
+                            Get {serviceAction.service}
+                            {serviceAction.type === 'Handld' && (
+                              <img src="/Handld_Logo_Transparent.png" alt="Handld" style={{ height: '16px', filter: 'brightness(0) invert(1)' }} />
+                            )}
                           </a>
                         </div>
                       )}
@@ -372,14 +476,14 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
                   <div style={{ 
                     background: '#eff6ff', 
                     border: '2px solid #2A54A1',
-                    padding: '20px', 
-                    borderRadius: '12px',
-                    marginTop: '20px'
+                    padding: '16px', 
+                    borderRadius: '10px',
+                    marginTop: '16px'
                   }}>
-                    <div style={{ fontSize: '16px', fontWeight: '700', marginBottom: '12px', color: '#2A54A1' }}>
+                    <div style={{ fontSize: '15px', fontWeight: '700', marginBottom: '10px', color: '#2A54A1' }}>
                       Additional Notes for {section}
                     </div>
-                    <div style={{ fontSize: '15px', color: '#1e40af', whiteSpace: 'pre-line', lineHeight: '1.6' }}>
+                    <div style={{ fontSize: '14px', color: '#1e40af', whiteSpace: 'pre-line', lineHeight: '1.5' }}>
                       {report.sectionNotes[section]}
                     </div>
                   </div>
@@ -389,49 +493,64 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
           </>
         )}
 
-        <div className="card" style={{ marginTop: '40px', background: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px', color: '#2A54A1', textAlign: 'center' }}>
+        <div className="card" style={{ marginTop: '32px', background: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '20px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '16px', color: '#2A54A1', textAlign: 'center' }}>
             Complete 31-Point Inspection Checklist
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px' }}>
             {tasks.sort((a, b) => a.taskNumber - b.taskNumber).map(task => (
               <div 
                 key={task.id} 
                 style={{ 
-                  padding: '12px',
+                  padding: '10px',
                   background: getStatusBgColor(task.status),
                   borderRadius: '8px',
                   borderLeft: `4px solid ${getStatusColor(task.status)}`,
-                  fontSize: '13px'
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
                 }}
+                onClick={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
               >
-                <div style={{ fontWeight: '600', marginBottom: '4px', color: '#1f2937' }}>
+                <div style={{ fontWeight: '600', marginBottom: '4px', color: '#1f2937', fontSize: '13px' }}>
                   #{task.taskNumber}: {task.taskName}
                 </div>
                 <div style={{ 
                   display: 'inline-block',
                   padding: '2px 8px',
-                  borderRadius: '12px',
-                  fontSize: '11px',
+                  borderRadius: '10px',
+                  fontSize: '10px',
                   fontWeight: '600',
                   background: getStatusColor(task.status),
                   color: 'white'
                 }}>
                   {task.status}
                 </div>
+                {expandedTask === task.id && (
+                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #d1d5db' }}>
+                    <div style={{ fontSize: '11px', color: '#4b5563', lineHeight: '1.4', marginBottom: '6px' }}>
+                      {TASK_DETAILS[task.taskNumber] || task.taskDescription}
+                    </div>
+                    {task.notes && (
+                      <div style={{ fontSize: '11px', color: '#2A54A1', fontStyle: 'italic' }}>
+                        <strong>Notes:</strong> {task.notes}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
 
-        <div className="card" style={{ background: '#2A54A1', color: 'white', textAlign: 'center', marginTop: '40px', padding: '40px 30px' }}>
-          <h3 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '16px' }}>
+        <div className="card" style={{ background: '#2A54A1', color: 'white', textAlign: 'center', marginTop: '32px', padding: '32px 24px' }}>
+          <h3 style={{ fontSize: '26px', fontWeight: 'bold', marginBottom: '12px' }}>
             Questions About Your Report?
           </h3>
-          <p style={{ marginBottom: '24px', opacity: 0.95, fontSize: '16px', lineHeight: '1.6' }}>
+          <p style={{ marginBottom: '20px', opacity: 0.95, fontSize: '15px', lineHeight: '1.5' }}>
             Our team is here to help you maintain a safe and healthy home. Schedule services or get expert advice.
           </p>
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a
               href="mailto:support@handldhome.com"
               style={{ 
@@ -440,8 +559,8 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
                 textDecoration: 'none',
                 display: 'inline-block',
                 fontWeight: '700',
-                fontSize: '16px',
-                padding: '14px 32px',
+                fontSize: '15px',
+                padding: '12px 28px',
                 borderRadius: '8px',
                 boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
               }}
@@ -449,17 +568,15 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
               Contact Us
             </a>
             <a
-              href="https://handldhome.com/services"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
               style={{ 
                 background: '#10b981',
                 color: 'white',
                 textDecoration: 'none',
                 display: 'inline-block',
                 fontWeight: '700',
-                fontSize: '16px',
-                padding: '14px 32px',
+                fontSize: '15px',
+                padding: '12px 28px',
                 borderRadius: '8px',
                 boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
               }}
@@ -471,14 +588,14 @@ ${task.notes ? `Notes: ${task.notes}` : ''}
 
         <div style={{ 
           textAlign: 'center', 
-          marginTop: '40px', 
-          paddingTop: '24px', 
+          marginTop: '32px', 
+          paddingTop: '20px', 
           borderTop: '2px solid #e5e7eb', 
           color: '#999', 
-          fontSize: '14px',
-          paddingBottom: '40px'
+          fontSize: '13px',
+          paddingBottom: '32px'
         }}>
-          <p style={{ marginBottom: '8px' }}>
+          <p style={{ marginBottom: '6px' }}>
             Inspected by: <strong style={{ color: '#2A54A1' }}>{report.technicianName}</strong>
           </p>
           <p>
