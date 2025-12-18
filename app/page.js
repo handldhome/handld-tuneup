@@ -261,7 +261,7 @@ export default function TechnicianForm() {
       
       setTimeout(() => {
         window.location.reload();
-      }, 3000);
+      }, 5000);
 
     } catch (err) {
       console.error('Submission error:', err);
