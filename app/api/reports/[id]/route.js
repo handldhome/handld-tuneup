@@ -1,8 +1,21 @@
+// app/api/reports/[id]/route.js
+// API endpoint to fetch a single report by ID
+
 import { getReport } from '../../../../lib/airtable-tuneup';
 
 export async function GET(request, { params }) {
   try {
     const { id } = params;
+    
+    if (!id) {
+      return Response.json(
+        { error: 'Report ID is required' },
+        { status: 400 }
+      );
+    }
+
+    console.log('[API] Fetching report:', id);
+    
     const report = await getReport(id);
     
     if (!report) {
@@ -13,10 +26,14 @@ export async function GET(request, { params }) {
     }
 
     return Response.json(report);
+
   } catch (error) {
     console.error('[API] Error fetching report:', error);
     return Response.json(
-      { error: 'Failed to fetch report' },
+      { 
+        error: 'Failed to fetch report',
+        details: error.message 
+      },
       { status: 500 }
     );
   }
