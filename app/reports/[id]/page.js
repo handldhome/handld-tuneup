@@ -201,14 +201,13 @@ export default function ReportViewer() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="button"
-                          style={{ 
+                         style={{ 
                             display: 'inline-block',
                             fontSize: '14px', 
                             padding: '10px 20px',
                             textDecoration: 'none',
                             background: '#2A54A1'
-                          }}
-                        >
+                          }}>
                           {task.actionText || 'Schedule Service'}
                         </a>
                       </div>
