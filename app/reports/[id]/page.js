@@ -463,7 +463,7 @@ export default function ReportViewer() {
                           >
                             Get {serviceAction.service}
                             {serviceAction.type === 'Handld' && (
-                              <img src="/Handld_Wordmark_White.png" alt="Handld" style={{ height: '22px', marginLeft: '6px', verticalAlign: 'middle', marginBottom: '2px' }} />
+                              <img src="/Handld_Wordmark_White.png" alt="Handld" style={{ height: '28px', marginLeft: '6px', verticalAlign: 'middle', marginBottom: '3px' }} />
                             )}
                           </a>
                         </div>
