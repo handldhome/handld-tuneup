@@ -81,6 +81,8 @@ export default function ReportViewer() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedTask, setExpandedTask] = useState(null);
+  const [clickedReferral, setClickedReferral] = useState(null);
+  const [showMoreTask, setShowMoreTask] = useState(null);
 
   useEffect(() => {
     async function fetchReport() {
@@ -317,7 +319,7 @@ export default function ReportViewer() {
           padding: '20px'
         }}>
           <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '20px', color: '#2A54A1', textAlign: 'center' }}>
-            Inspection Summary
+            Report Summary
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px' }}>
             <div style={{ textAlign: 'center', padding: '16px', background: '#d1fae5', borderRadius: '12px' }}>
@@ -411,6 +413,35 @@ export default function ReportViewer() {
                           <div style={{ fontSize: '14px', color: '#4b5563', marginBottom: '10px', lineHeight: '1.5' }}>
                             {TASK_DETAILS[task.taskNumber] || task.taskDescription}
                           </div>
+                          <button
+                            onClick={() => setShowMoreTask(showMoreTask === task.id ? null : task.id)}
+                            style={{
+                              background: 'transparent',
+                              border: 'none',
+                              color: '#2A54A1',
+                              fontSize: '13px',
+                              fontWeight: '600',
+                              cursor: 'pointer',
+                              padding: '0',
+                              textDecoration: 'underline'
+                            }}
+                          >
+                            {showMoreTask === task.id ? '← Show Less' : 'Show More →'}
+                          </button>
+                          {showMoreTask === task.id && (
+                            <div style={{
+                              marginTop: '12px',
+                              padding: '12px',
+                              background: '#f0f9ff',
+                              borderRadius: '8px',
+                              fontSize: '13px',
+                              color: '#1e40af',
+                              lineHeight: '1.6'
+                            }}>
+                              <strong style={{ display: 'block', marginBottom: '8px', color: '#2A54A1' }}>What We Check:</strong>
+                              {task.taskDescription}
+                            </div>
+                          )}
                         </div>
                         <span style={{ 
                           marginLeft: '12px', 
@@ -442,30 +473,70 @@ export default function ReportViewer() {
                       )}
 
                       {serviceAction && (
-                        <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
-                          <a
-                            href={serviceAction.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ 
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '8px',
-                              fontSize: '14px', 
-                              padding: '10px 20px',
-                              textDecoration: 'none',
-                              background: '#2A54A1',
-                              color: 'white',
-                              borderRadius: '8px',
-                              fontWeight: '700',
-                              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                            }}
-                          >
-                            Get {serviceAction.service}
-                            {serviceAction.type === 'Handld' && (
-                              <img src="/Handld_Wordmark_White.png" alt="Handld" style={{ height: '64px', marginLeft: '-2px', verticalAlign: 'middle', marginBottom: '8px', display: 'inline' }} />
-                            )}
-                          </a>
+                        <div style={{ marginTop: '12px' }}>
+                          {serviceAction.type === 'Referral' ? (
+                            <>
+                              <button
+                                onClick={() => setClickedReferral(clickedReferral === task.id ? null : task.id)}
+                                style={{ 
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '8px',
+                                  fontSize: '14px', 
+                                  padding: '10px 20px',
+                                  textDecoration: 'none',
+                                  background: clickedReferral === task.id ? '#10b981' : '#2A54A1',
+                                  color: 'white',
+                                  border: 'none',
+                                  borderRadius: '8px',
+                                  fontWeight: '700',
+                                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                                  cursor: 'pointer',
+                                  float: 'right'
+                                }}
+                              >
+                                {clickedReferral === task.id ? '✓ ' : ''}{serviceAction.type === 'Referral' ? 'Get ' : 'Get '}{serviceAction.service}{serviceAction.type === 'Referral' ? ' Referral' : ''} →
+                              </button>
+                              {clickedReferral === task.id && task.referralInfo && (
+                                <div style={{
+                                  clear: 'both',
+                                  marginTop: '60px',
+                                  padding: '16px',
+                                  background: '#d1fae5',
+                                  border: '2px solid #10b981',
+                                  borderRadius: '8px',
+                                  fontSize: '14px',
+                                  color: '#065f46',
+                                  fontWeight: '600'
+                                }}>
+                                  <div style={{ marginBottom: '4px', fontSize: '12px', textTransform: 'uppercase', color: '#059669' }}>Recommended Partner:</div>
+                                  {task.referralInfo}
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <a
+                              href={serviceAction.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ 
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                fontSize: '14px', 
+                                padding: '10px 20px',
+                                textDecoration: 'none',
+                                background: '#2A54A1',
+                                color: 'white',
+                                borderRadius: '8px',
+                                fontWeight: '700',
+                                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                                float: 'right'
+                              }}
+                            >
+                              Get {serviceAction.service} →
+                            </a>
+                          )}
                         </div>
                       )}
                     </div>
@@ -508,7 +579,8 @@ export default function ReportViewer() {
                   borderLeft: `4px solid ${getStatusColor(task.status)}`,
                   fontSize: '12px',
                   cursor: 'pointer',
-                  transition: 'all 0.2s'
+                  transition: 'all 0.3s ease',
+                  position: 'relative'
                 }}
                 onClick={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
               >
