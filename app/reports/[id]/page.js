@@ -461,9 +461,9 @@ export default function ReportViewer() {
                               boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
                             }}
                           >
-                            Get {serviceAction.service} 
+                            Get {serviceAction.service}
                             {serviceAction.type === 'Handld' && (
-                              <img src="/Handld_Wordmark_White.png" alt="Handld" style={{ height: '48px', marginLeft: '2px', verticalAlign: 'middle', marginBottom: '6px', display: 'inline' }} />
+                              <img src="/Handld_Wordmark_White.png" alt="Handld" style={{ height: '64px', marginLeft: '-2px', verticalAlign: 'middle', marginBottom: '8px', display: 'inline' }} />
                             )}
                           </a>
                         </div>
