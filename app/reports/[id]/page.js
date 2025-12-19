@@ -38,6 +38,40 @@ const TASK_DETAILS = {
   31: "Sticking locks can fail completely during emergencies. Smooth-operating locks ensure your home's security.",
 };
 
+const TASK_SHOW_MORE = {
+  1: "During your inspection, we carefully examined your gutter system for debris accumulation and checked that downspouts direct water at least 6 feet away from your foundation. Proper gutter function is one of the most cost-effective ways to prevent foundation damage—a clogged gutter can dump thousands of gallons against your home's base during just one rainstorm. We also looked for signs of overflow staining on your siding, which indicates gutters aren't handling water properly. Regular maintenance protects your biggest investment.",
+  2: "We walked the entire perimeter of your foundation looking for hairline cracks, settling, or water pooling near the base. We also used a flashlight to visually inspect your crawlspace opening (without entering) for standing water or moisture issues. Foundation problems rarely fix themselves—they only get worse and more expensive over time. Early detection of even minor settling can save you tens of thousands in future repair costs. This is preventive care that truly pays off.",
+  3: "We inspected all exterior walls for cracks in stucco, loose or damaged siding, and any holes that could allow moisture or pest entry. Even small cracks create pathways for water infiltration, which leads to mold, wood rot, and structural damage inside your walls. We pay special attention to areas around windows and doors where problems commonly start. Catching these issues early means simple repairs instead of major reconstruction.",
+  4: "Your home's exterior was checked for dirt, algae, mildew, and organic growth—both on siding and along the roofline. While this might seem cosmetic, organic growth actually eats away at your home's protective surfaces over time. Plus, a clean exterior significantly boosts curb appeal and property value. We inspected your roof from ground level (no climbing required) to spot debris accumulation that can trap moisture and accelerate wear.",
+  5: "We examined all walkways, driveways, and pathways for algae, mildew, or staining that creates slippery surfaces—a major liability risk. Slip-and-fall accidents are one of the most common homeowner insurance claims, and preventable surface hazards make you vulnerable. We focused on areas near sprinklers and shaded spots where growth is most likely. A clean, safe walking surface protects both your family and your guests.",
+  6: "We tested all outdoor lighting fixtures and motion sensors to ensure your property is properly illuminated after dark. Adequate exterior lighting is proven to deter break-ins and prevent nighttime accidents. We checked for burned-out bulbs and verified motion sensors activate correctly—covering sensors by hand during daylight testing. Well-lit exteriors make your home safer and more welcoming.",
+  7: "We checked weatherstripping and examined window screens around every exterior door and window for signs of wear, tears, or missing pieces. We also felt for drafts around frames. Poor weatherstripping doesn't just waste energy (and money)—it also lets in pests, dust, and outdoor allergens. This simple upgrade pays for itself quickly through lower utility bills while improving your home's comfort year-round.",
+  8: "We tested your garage door's critical auto-reverse safety mechanism by placing an object (never a hand!) in the door's path. This safety feature prevents serious injuries and even deaths—a malfunctioning sensor is a genuine hazard, especially with children around. We also checked sensor alignment. This is the kind of safety check that only takes minutes but could save a life.",
+  9: "We opened your electrical panel to visually inspect for rust, corrosion, or any burning smell—signs of serious electrical problems. We also checked if your circuit breakers are properly labeled. During an emergency, every second counts. Unlabeled panels waste precious time when you need to cut power quickly. We can provide professional labeling service to make your electrical system safer and more user-friendly.",
+  10: "We tested multiple outlets in each room, checking for loose faceplates, burn marks, or warmth—all warning signs of electrical problems. We know that warm outlets are a serious safety concern indicating dangerous current issues. Faulty outlets cause thousands of house fires annually. This inspection helps identify problems before they become catastrophes.",
+  11: "We located and tested every GFCI outlet in your home—in kitchens, bathrooms, garage, and exterior locations—by pressing the TEST button to verify power cuts off, then RESET to restore it. GFCIs are your protection against electrical shock in wet areas. A non-functioning GFCI is a genuine life-safety issue, especially in homes with children. These devices are required by code for very good reason.",
+  12: "We surveyed light fixtures throughout your home, noting which bulbs could be upgraded to energy-efficient LED technology. This isn't just about being 'green'—LED bulbs use 75% less energy and last 25 times longer than old incandescent bulbs. Focusing on your most-used fixtures first maximizes savings. The upgrade pays for itself through lower electric bills while reducing how often you need to change bulbs.",
+  13: "We inspected your water heater for its manufacturing date (most last 8-12 years), signs of rust, corrosion, water pooling, or unusual sounds. We also checked the temperature setting for safety and efficiency. Water heater failures are catastrophic—they don't just stop working, they can flood your home with dozens of gallons. Knowing your heater's age lets you plan for replacement before an emergency, potentially saving thousands in water damage.",
+  14: "We opened every sink cabinet to feel pipes for moisture, look for water stains on cabinet bottoms, and smell for mildew. Hidden leaks are insidious—they cause mold growth, wood rot, and structural damage long before you notice. We use flashlights to see deep into cabinets where problems hide. Early leak detection prevents major repairs and protects your family's health from mold exposure.",
+  15: "We tested every faucet in your home for drips when off, water pressure issues, and leaks at the base. A dripping faucet seems minor but can waste thousands of gallons annually. Low pressure often indicates aerator buildup—an easy fix! We check both hot and cold water operation. Many faucet problems are simple repairs that pay for themselves through water savings.",
+  16: "We listened for running water in toilets and can perform a simple food coloring test: add drops to the tank, wait 15 minutes, and check if color appears in the bowl without flushing. Running toilets waste up to 200 gallons daily—that's money flowing down the drain month after month. We also checked for base leaks. This is one of the easiest ways to cut your water bill.",
+  17: "We turned on all showers to check water pressure and spray patterns, inspecting shower heads for mineral deposits and clogs. That white crusty buildup you see? It's reducing your water pressure and coverage. Good news: it's usually fixable with a simple vinegar soak. Clean shower heads mean better showers and lower water bills through improved efficiency.",
+  18: "We checked expiration dates on your refrigerator water filter and any under-sink filtration systems, plus any filter indicator lights. Most filters need replacement every 6 months—old filters not only reduce water quality but actually become breeding grounds for bacteria. Fresh filters mean cleaner, better-tasting water and longer appliance life. We can help set up a replacement reminder schedule.",
+  19: "We tested your garbage disposal operation, listened for unusual grinding sounds, checked underneath for leaks, and verified the reset button is accessible. Never put your hand in a disposal—we use tongs if testing is needed. Malfunctioning disposals cause kitchen clogs, leaks, and real inconvenience. Catching problems early means repair instead of replacement.",
+  20: "We located and removed your dishwasher filter to check for food debris, then inspected the door gasket for cracks or mold. Here's a secret: most homeowners don't even know their dishwasher has a filter! A dirty filter dramatically reduces cleaning performance and causes odors. We also tested the door latch. Regular cleaning extends your dishwasher's life and ensures sparkling dishes.",
+  21: "We removed your range hood filter to check for grease buildup, tested fan operation, and checked the exterior vent if accessible. Grease buildup isn't just gross—it's a serious fire hazard. Range hood fires spread quickly and can destroy kitchens. We also noted when it was last cleaned. This critical safety check takes minutes but protects your home and family.",
+  22: "We located your HVAC filter, removed it for inspection, noted the size, and photographed the size label. A dirty filter reduces system efficiency by 15% while increasing energy costs. Filters should be changed every 1-3 months depending on type. We help you identify the right filter and can set up a replacement schedule. Clean filters mean lower bills and better air quality.",
+  23: "We checked for your HVAC system's manufacturing date (average lifespan 15-20 years), listened to it running for strange noises, and inspected the outdoor unit for rust or sizing issues. Knowing your system's age helps you budget for eventual replacement and avoid emergency failures in extreme weather. We document early warning signs so you can plan ahead, not panic later.",
+  24: "We inspected your dryer vent opening, pulled out visible lint, noted if flexible duct material is used (a fire code violation in many areas), checked the exterior vent flap, and assessed dryer efficiency. Clogged dryer vents cause 15,000 house fires annually—this isn't a minor issue. Lint is extremely flammable. This is one of the most important fire safety checks in your home.",
+  25: "We safely accessed your attic opening and used a flashlight to inspect insulation coverage, looking for even distribution, thin spots, gaps, and any moisture or mold. We don't enter unsafe attics—visual inspection from the opening is sufficient. Poor insulation can increase heating and cooling costs by 20% or more. Proper insulation is one of the best energy investments you can make.",
+  26: "We tested all bathroom exhaust fans and kitchen ventilation to ensure proper operation, then looked for window condensation and noted any musty odors. Poor ventilation leads directly to mold, mildew, and moisture damage—problems that affect both your home's structure and your family's health. Good airflow is essential to preventing expensive moisture-related repairs and maintaining healthy indoor air quality.",
+  27: "We tested every smoke detector by pressing the test button, listening for chirping (low battery warning), checking manufacturing dates (they expire after 10 years!), and vacuuming detector grills to keep sensors clean. We also counted total detectors. Smoke detectors save lives, but only if they're working—expired detectors give false confidence. The 10-year expiration is real; check the back of every detector in your home.",
+  28: "We located all carbon monoxide detectors, tested them with the button, checked expiration dates (5-7 year lifespan), noted placement, and verified detectors near all sleeping areas. CO poisoning is called 'the silent killer' because you can't see or smell it. Working CO detectors are your only early warning system. They're required by code near sleeping areas for very good reason—they save lives.",
+  29: "We tested all stairway lighting, verified light switch locations are convenient and code-compliant, shook railings to check stability, looked for loose balusters, and noted any trip hazards on stairs. Stairway falls are a leading cause of home injuries, especially for children and seniors. Proper lighting and stable railings are simple safety measures that prevent serious accidents.",
+  30: "We walked through your entire home looking for loose rugs, extension cords across walkways, uneven flooring, and door thresholds that create tripping hazards. We focused on high-traffic areas and paths to bathrooms (nighttime fall risk). Trip hazards cause thousands of preventable injuries every year. Often, simple fixes like securing rugs or rerouting cords make your home dramatically safer.",
+  31: "We tested every exterior door lock and deadbolt for smooth operation, noting any sticking, difficulty turning, or misaligned strike plates. Sticking locks often just need lubrication—an easy fix. But locks can also fail completely during emergencies when you need quick exit. Smooth-operating locks are essential for both security (keeping intruders out) and safety (allowing quick escape if needed).",
+};
+
 const SERVICE_ACTIONS = {
   "Gutter & Downspout Flow": { service: "Gutter Cleaning", link: "#", type: "Handld" },
   "Foundation Perimeter Inspection": { service: "Foundation Repair Referral", link: "#", type: "Referral" },
@@ -431,15 +465,16 @@ export default function ReportViewer() {
                           {showMoreTask === task.id && (
                             <div style={{
                               marginTop: '12px',
-                              padding: '12px',
+                              padding: '14px',
                               background: '#f0f9ff',
+                              border: '2px solid #2A54A1',
                               borderRadius: '8px',
                               fontSize: '13px',
                               color: '#1e40af',
-                              lineHeight: '1.6'
+                              lineHeight: '1.7'
                             }}>
-                              <strong style={{ display: 'block', marginBottom: '8px', color: '#2A54A1' }}>What We Check:</strong>
-                              {task.taskDescription}
+                              <strong style={{ display: 'block', marginBottom: '10px', color: '#2A54A1', fontSize: '14px' }}>What We Inspected & Why It Matters:</strong>
+                              {TASK_SHOW_MORE[task.taskNumber] || task.taskDescription}
                             </div>
                           )}
                         </div>
@@ -473,34 +508,34 @@ export default function ReportViewer() {
                       )}
 
                       {serviceAction && (
-                        <div style={{ marginTop: '12px' }}>
+                        <div style={{ marginTop: '12px', clear: 'both' }}>
                           {serviceAction.type === 'Referral' ? (
                             <>
-                              <button
-                                onClick={() => setClickedReferral(clickedReferral === task.id ? null : task.id)}
-                                style={{ 
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '8px',
-                                  fontSize: '14px', 
-                                  padding: '10px 20px',
-                                  textDecoration: 'none',
-                                  background: clickedReferral === task.id ? '#10b981' : '#2A54A1',
-                                  color: 'white',
-                                  border: 'none',
-                                  borderRadius: '8px',
-                                  fontWeight: '700',
-                                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                                  cursor: 'pointer',
-                                  float: 'right'
-                                }}
-                              >
-                                {clickedReferral === task.id ? '✓ ' : ''}{serviceAction.type === 'Referral' ? 'Get ' : 'Get '}{serviceAction.service}{serviceAction.type === 'Referral' ? ' Referral' : ''} →
-                              </button>
+                              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <button
+                                  onClick={() => setClickedReferral(clickedReferral === task.id ? null : task.id)}
+                                  style={{ 
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    fontSize: '14px', 
+                                    padding: '10px 20px',
+                                    textDecoration: 'none',
+                                    background: clickedReferral === task.id ? '#10b981' : '#2A54A1',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontWeight: '700',
+                                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  {clickedReferral === task.id ? '✓ ' : ''}{serviceAction.type === 'Referral' ? 'Get ' : 'Get '}{serviceAction.service}{serviceAction.type === 'Referral' ? ' Referral' : ''} →
+                                </button>
+                              </div>
                               {clickedReferral === task.id && task.referralInfo && (
                                 <div style={{
-                                  clear: 'both',
-                                  marginTop: '60px',
+                                  marginTop: '12px',
                                   padding: '16px',
                                   background: '#d1fae5',
                                   border: '2px solid #10b981',
@@ -515,27 +550,28 @@ export default function ReportViewer() {
                               )}
                             </>
                           ) : (
-                            <a
-                              href={serviceAction.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{ 
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                fontSize: '14px', 
-                                padding: '10px 20px',
-                                textDecoration: 'none',
-                                background: '#2A54A1',
-                                color: 'white',
-                                borderRadius: '8px',
-                                fontWeight: '700',
-                                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                                float: 'right'
-                              }}
-                            >
-                              Get {serviceAction.service} →
-                            </a>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                              <a
+                                href={serviceAction.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ 
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '8px',
+                                  fontSize: '14px', 
+                                  padding: '10px 20px',
+                                  textDecoration: 'none',
+                                  background: '#2A54A1',
+                                  color: 'white',
+                                  borderRadius: '8px',
+                                  fontWeight: '700',
+                                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                                }}
+                              >
+                                Get {serviceAction.service} →
+                              </a>
+                            </div>
                           )}
                         </div>
                       )}
