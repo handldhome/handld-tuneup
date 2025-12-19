@@ -604,7 +604,7 @@ export default function ReportViewer() {
           <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '16px', color: '#2A54A1', textAlign: 'center' }}>
             Complete 31-Point Inspection Checklist
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px', alignItems: 'start' }}>
             {tasks.sort((a, b) => a.taskNumber - b.taskNumber).map(task => (
               <div 
                 key={task.id} 
@@ -616,6 +616,9 @@ export default function ReportViewer() {
                   fontSize: '12px',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
+                  boxShadow: expandedTask === task.id ? '0 8px 16px rgba(0,0,0,0.15)' : 'none',
+                  transform: expandedTask === task.id ? 'scale(1.02)' : 'scale(1)',
+                  zIndex: expandedTask === task.id ? 10 : 1,
                   position: 'relative'
                 }}
                 onClick={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
