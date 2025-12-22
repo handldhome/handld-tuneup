@@ -6,11 +6,9 @@ export default async function ReportPage({ params }) {
   const { id } = params;
 
   try {
-    // Fetch data server-side
     const report = await getReport(id);
     const tasks = await getTaskResults(id);
 
-    // Pass data to client component
     return <ReportClient report={report} tasks={tasks} />;
   } catch (error) {
     return (
