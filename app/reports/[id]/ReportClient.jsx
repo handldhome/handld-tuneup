@@ -396,7 +396,7 @@ export default function ReportClient({ report, tasks }) {
                               textDecoration: 'underline'
                             }}
                           >
-                            {showMoreTask === task.id ? '← Show Less' : 'Show More →'}
+                            {showMoreTask === task.id ? '\u2190 Show Less' : 'Show More \u2192'}
                           </button>
                           {showMoreTask === task.id && (
                             <div style={{
@@ -464,9 +464,8 @@ export default function ReportClient({ report, tasks }) {
                                     fontWeight: '700',
                                     boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                                     cursor: 'pointer'
-                                  }}
-                                >
-                                  {clickedReferral === task.id ? '✓ ' : ''}{serviceAction.type === 'Referral' ? 'Get ' : 'Get '}{serviceAction.service}{serviceAction.type === 'Referral' ? ' Referral' : ''} →
+                                  }}>
+                                  {clickedReferral === task.id ? '\u2713 ' : ''}{serviceAction.type === 'Referral' ? 'Get ' : 'Get '}{serviceAction.service}{serviceAction.type === 'Referral' ? ' Referral' : ''} &rarr;
                                 </button>
                               </div>
                               {clickedReferral === task.id && task.referralInfo && (
@@ -503,9 +502,8 @@ export default function ReportClient({ report, tasks }) {
                                   borderRadius: '8px',
                                   fontWeight: '700',
                                   boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                                }}
-                              >
-                                Get {serviceAction.service} →
+                                }}>
+                                Get {serviceAction.service} &rarr;
                               </a>
                             </div>
                           )}
