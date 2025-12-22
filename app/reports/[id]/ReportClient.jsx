@@ -464,8 +464,9 @@ export default function ReportClient({ report, tasks }) {
                                     fontWeight: '700',
                                     boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                                     cursor: 'pointer'
-                                  }}>
-                                  {clickedReferral === task.id ? '\u2713 ' : ''}{serviceAction.type === 'Referral' ? 'Get ' : 'Get '}{serviceAction.service}{serviceAction.type === 'Referral' ? ' Referral' : ''} &rarr;
+                                  }}
+                                >
+                                  {clickedReferral === task.id ? '\u2713 ' : ''}{serviceAction.type === 'Referral' ? 'Get ' : 'Get '}{serviceAction.service}{serviceAction.type === 'Referral' ? ' Referral' : ''} {'\u2192'}
                                 </button>
                               </div>
                               {clickedReferral === task.id && task.referralInfo && (
@@ -502,8 +503,9 @@ export default function ReportClient({ report, tasks }) {
                                   borderRadius: '8px',
                                   fontWeight: '700',
                                   boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                                }}>
-                                Get {serviceAction.service} &rarr;
+                                }}
+                              >
+                                Get {serviceAction.service} {'\u2192'}
                               </a>
                             </div>
                           )}
