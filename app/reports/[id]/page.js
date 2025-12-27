@@ -116,7 +116,6 @@ export default function ReportViewer() {
   const [error, setError] = useState('');
   const [expandedTask, setExpandedTask] = useState(null);
   const [showMoreTask, setShowMoreTask] = useState(null);
-  const [clickedReferral, setClickedReferral] = useState(null);
 
   useEffect(() => {
     async function fetchReport() {
@@ -353,7 +352,7 @@ export default function ReportViewer() {
           padding: '20px'
         }}>
           <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '20px', color: '#2A54A1', textAlign: 'center' }}>
-            Report Summary
+            Inspection Summary
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px' }}>
             <div style={{ textAlign: 'center', padding: '16px', background: '#d1fae5', borderRadius: '12px' }}>
@@ -460,7 +459,7 @@ export default function ReportViewer() {
                               textDecoration: 'underline'
                             }}
                           >
-                            {showMoreTask === task.id ? '\u2190 Show Less' : 'Show More \u2192'}
+                            {showMoreTask === task.id ? '← Show Less' : 'Show More →'}
                           </button>
                           {showMoreTask === task.id && (
                             <div style={{
@@ -508,73 +507,30 @@ export default function ReportViewer() {
                       )}
 
                       {serviceAction && (
-                        <div style={{ marginTop: '12px', clear: 'both' }}>
-                          {serviceAction.type === 'Referral' ? (
-                            <>
-                              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                <button
-                                  onClick={() => setClickedReferral(clickedReferral === task.id ? null : task.id)}
-                                  style={{ 
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    fontSize: '14px', 
-                                    padding: '10px 20px',
-                                    textDecoration: 'none',
-                                    background: clickedReferral === task.id ? '#10b981' : '#2A54A1',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    fontWeight: '700',
-                                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                                    cursor: 'pointer'
-                                  }}
-                                >
-                                  {clickedReferral === task.id ? '\u2713 ' : ''}Get {serviceAction.service} Referral
-                                </button>
-                              </div>
-                              {clickedReferral === task.id && task.referralInfo && (
-                                <div style={{
-                                  marginTop: '12px',
-                                  padding: '16px',
-                                  background: '#d1fae5',
-                                  border: '2px solid #10b981',
-                                  borderRadius: '8px',
-                                  fontSize: '14px',
-                                  color: '#065f46',
-                                  fontWeight: '600'
-                                }}>
-                                  <div style={{ marginBottom: '4px', fontSize: '12px', textTransform: 'uppercase', color: '#059669' }}>Recommended Partner:</div>
-                                  {task.referralInfo}
-                                </div>
-                              )}
-                            </>
-                        ) : (
-                            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                              
-                                href={serviceAction.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{ 
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '8px',
-                                  fontSize: '14px', 
-                                  padding: '10px 20px',
-                                  textDecoration: 'none',
-                                  background: '#2A54A1',
-                                  color: 'white',
-                                  borderRadius: '8px',
-                                  fontWeight: '700',
-                                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                                }}>
-                                Get {serviceAction.service}
-                                {serviceAction.type === 'Handld' && (
-                                  <img src="/Handld_Wordmark.png" alt="Handld" style={{ height: '18px', marginLeft: '6px', filter: 'brightness(0) invert(1)' }} />
-                                )}
-                              </a>
-                            </div>
-                          )}
+                        <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+                          
+                            href={serviceAction.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ 
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              fontSize: '14px', 
+                              padding: '10px 20px',
+                              textDecoration: 'none',
+                              background: '#2A54A1',
+                              color: 'white',
+                              borderRadius: '8px',
+                              fontWeight: '700',
+                              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                            }}
+                          >
+                            Get {serviceAction.service}
+                            {serviceAction.type === 'Handld' && (
+                              <img src="/Handld_Wordmark.png" alt="Handld" style={{ height: '18px', marginLeft: '6px', filter: 'brightness(0) invert(1)' }} />
+                            )}
+                          </a>
                         </div>
                       )}
                     </div>
