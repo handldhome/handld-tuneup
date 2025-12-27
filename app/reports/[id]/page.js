@@ -549,7 +549,7 @@ export default function ReportViewer() {
                                 </div>
                               )}
                             </>
-                          ) : (
+                        ) : (
                             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                               
                                 href={serviceAction.link}
@@ -567,8 +567,7 @@ export default function ReportViewer() {
                                   borderRadius: '8px',
                                   fontWeight: '700',
                                   boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                                }}
-                              >
+                                }}>
                                 Get {serviceAction.service}
                                 {serviceAction.type === 'Handld' && (
                                   <img src="/Handld_Wordmark.png" alt="Handld" style={{ height: '18px', marginLeft: '6px', filter: 'brightness(0) invert(1)' }} />
