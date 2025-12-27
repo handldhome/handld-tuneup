@@ -115,18 +115,11 @@ export default function ReportViewer() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedTask, setExpandedTask] = useState(null);
-  const [clickedReferral, setClickedReferral] = useState(null);
   const [showMoreTask, setShowMoreTask] = useState(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [clickedReferral, setClickedReferral] = useState(null);
 
   useEffect(() => {
     async function fetchReport() {
-      if (!reportId) return;
-      
       try {
         const reportRes = await fetch(`/api/reports/${reportId}`);
         if (!reportRes.ok) throw new Error('Report not found');
@@ -145,10 +138,10 @@ export default function ReportViewer() {
       }
     }
 
-    if (mounted && reportId) {
+    if (reportId) {
       fetchReport();
     }
-  }, [reportId, mounted]);
+  }, [reportId]);
 
   const generatePunchList = () => {
     const priorityTasks = tasks.filter(task => 
@@ -277,10 +270,6 @@ export default function ReportViewer() {
     window.open(url, '_blank');
     setTimeout(() => window.URL.revokeObjectURL(url), 100);
   };
-
-  if (!mounted) {
-    return null;
-  }
 
   if (loading) {
     return (
@@ -471,7 +460,7 @@ export default function ReportViewer() {
                               textDecoration: 'underline'
                             }}
                           >
-                            {showMoreTask === task.id ? '← Show Less' : 'Show More →'}
+                            {showMoreTask === task.id ? '\u2190 Show Less' : 'Show More \u2192'}
                           </button>
                           {showMoreTask === task.id && (
                             <div style={{
@@ -541,7 +530,7 @@ export default function ReportViewer() {
                                     cursor: 'pointer'
                                   }}
                                 >
-                                  {clickedReferral === task.id ? '✓ ' : ''}{serviceAction.type === 'Referral' ? 'Get ' : 'Get '}{serviceAction.service}{serviceAction.type === 'Referral' ? ' Referral' : ''} →
+                                  {clickedReferral === task.id ? '\u2713 ' : ''}Get {serviceAction.service} Referral
                                 </button>
                               </div>
                               {clickedReferral === task.id && task.referralInfo && (
@@ -580,7 +569,10 @@ export default function ReportViewer() {
                                   boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
                                 }}
                               >
-                                Get {serviceAction.service} →
+                                Get {serviceAction.service}
+                                {serviceAction.type === 'Handld' && (
+                                  <img src="/Handld_Wordmark.png" alt="Handld" style={{ height: '18px', marginLeft: '6px', filter: 'brightness(0) invert(1)' }} />
+                                )}
                               </a>
                             </div>
                           )}
@@ -615,7 +607,7 @@ export default function ReportViewer() {
           <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '16px', color: '#2A54A1', textAlign: 'center' }}>
             Complete 31-Point Inspection Checklist
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px' }}>
             {tasks.sort((a, b) => a.taskNumber - b.taskNumber).map(task => (
               <div 
                 key={task.id} 
@@ -626,11 +618,7 @@ export default function ReportViewer() {
                   borderLeft: `4px solid ${getStatusColor(task.status)}`,
                   fontSize: '12px',
                   cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: expandedTask === task.id ? '0 8px 16px rgba(0,0,0,0.15)' : 'none',
-                  transform: expandedTask === task.id ? 'scale(1.02)' : 'scale(1)',
-                  zIndex: expandedTask === task.id ? 10 : 1,
-                  position: 'relative'
+                  transition: 'all 0.2s'
                 }}
                 onClick={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
               >
