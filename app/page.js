@@ -217,6 +217,67 @@ export default function TechnicianForm() {
     setCurrentStep('tasks');
   };
 
+  const compressImage = (file) => {
+    return new Promise((resolve, reject) => {
+      // If it's not an image, return the original file
+      if (!file.type.startsWith('image/')) {
+        resolve(file);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          // Calculate new dimensions (max width 1200px)
+          const MAX_WIDTH = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > MAX_WIDTH) {
+            height = (height * MAX_WIDTH) / width;
+            width = MAX_WIDTH;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          // Draw and compress
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Convert to blob with 80% quality
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                // Create a new File object from the blob
+                const compressedFile = new File([blob], file.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              } else {
+                reject(new Error('Failed to compress image'));
+              }
+            },
+            'image/jpeg',
+            0.8 // 80% quality
+          );
+        };
+
+        img.onerror = () => reject(new Error('Failed to load image'));
+      };
+
+      reader.onerror = () => reject(new Error('Failed to read file'));
+    });
+  };
+
   const convertFileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -237,12 +298,16 @@ export default function TechnicianForm() {
     setError('');
 
     try {
-      // Convert all photos to base64
+      // Compress and convert all photos to base64
       const taskResultsWithPhotos = await Promise.all(
         TASKS.map(async (task) => {
           const photos = taskPhotos[task.number] || [];
           const convertedPhotos = await Promise.all(
-            photos.map(file => convertFileToBase64(file))
+            photos.map(async (file) => {
+              // Compress image first, then convert to base64
+              const compressedFile = await compressImage(file);
+              return convertFileToBase64(compressedFile);
+            })
           );
 
           return {
