@@ -493,10 +493,10 @@ export default function ReportViewer() {
                               boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
                             }}
                           >
-                            Get {serviceAction.service}
-                            {serviceAction.type === 'Handld' && (
-                              <img src="/Handld_Wordmark.png" alt="Handld" style={{ height: '18px', marginLeft: '6px', filter: 'brightness(0) invert(1)' }} />
-                            )}
+                            {serviceAction.type === 'Handld'
+                              ? `--> Get ${serviceAction.service} Handld`
+                              : '--> Make an introduction to a trusted vendor'
+                            }
                           </a>
                         )}
                       </div>
