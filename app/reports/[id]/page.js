@@ -392,11 +392,12 @@ export default function ReportViewer() {
                 
                 {sectionTasks.map(task => {
                   const serviceAction = SERVICE_ACTIONS[task.taskName];
-                  
+                  const isExpanded = expandedTask === task.id;
+
                   return (
-                    <div key={task.id} style={{ 
-                      marginBottom: '20px', 
-                      paddingBottom: '20px', 
+                    <div key={task.id} style={{
+                      marginBottom: '20px',
+                      paddingBottom: '20px',
                       borderBottom: '2px solid #e5e7eb',
                       background: getStatusBgColor(task.status),
                       padding: '16px',
@@ -408,12 +409,9 @@ export default function ReportViewer() {
                           <div style={{ fontWeight: 'bold', fontSize: '17px', marginBottom: '6px', color: '#1f2937' }}>
                             #{task.taskNumber}: {task.taskName}
                           </div>
-                          <div style={{ fontSize: '14px', color: '#4b5563', marginBottom: '10px', lineHeight: '1.5' }}>
-                            {TASK_DETAILS[task.taskNumber] || task.taskDescription}
-                          </div>
                         </div>
-                        <span style={{ 
-                          marginLeft: '12px', 
+                        <span style={{
+                          marginLeft: '12px',
                           flexShrink: 0,
                           padding: '5px 14px',
                           borderRadius: '18px',
@@ -426,32 +424,66 @@ export default function ReportViewer() {
                           {task.status}
                         </span>
                       </div>
-                      
-                      {task.notes && (
-                        <div style={{ 
-                          background: 'white', 
-                          padding: '14px', 
-                          borderRadius: '8px',
-                          fontSize: '13px',
-                          marginTop: '10px',
-                          border: '1px solid #d1d5db',
-                          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
-                        }}>
-                          <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {task.notes}
-                        </div>
+
+                      {isExpanded && (
+                        <>
+                          <div style={{ fontSize: '14px', color: '#4b5563', marginBottom: '10px', lineHeight: '1.5' }}>
+                            {TASK_DETAILS[task.taskNumber] || task.taskDescription}
+                          </div>
+
+                          {task.notes && (
+                            <div style={{
+                              background: 'white',
+                              padding: '14px',
+                              borderRadius: '8px',
+                              fontSize: '13px',
+                              marginTop: '10px',
+                              border: '1px solid #d1d5db',
+                              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
+                            }}>
+                              <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {task.notes}
+                            </div>
+                          )}
+                        </>
                       )}
 
-                      {serviceAction && (
-                        <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+                      <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                        <button
+                          onClick={() => setExpandedTask(isExpanded ? null : task.id)}
+                          style={{
+                            background: 'white',
+                            color: '#2A54A1',
+                            border: '2px solid #2A54A1',
+                            padding: '8px 16px',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#2A54A1';
+                            e.currentTarget.style.color = 'white';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'white';
+                            e.currentTarget.style.color = '#2A54A1';
+                          }}
+                        >
+                          {isExpanded ? '▲ Show Less' : '▼ Show More'}
+                        </button>
+
+                        {serviceAction && (
                           <a
                             href={serviceAction.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ 
+                            style={{
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '8px',
-                              fontSize: '14px', 
+                              fontSize: '14px',
                               padding: '10px 20px',
                               textDecoration: 'none',
                               background: '#2A54A1',
@@ -466,8 +498,8 @@ export default function ReportViewer() {
                               <img src="/Handld_Wordmark.png" alt="Handld" style={{ height: '18px', marginLeft: '6px', filter: 'brightness(0) invert(1)' }} />
                             )}
                           </a>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   );
                 })}
