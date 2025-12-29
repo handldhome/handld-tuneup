@@ -217,25 +217,48 @@ export default function TechnicianForm() {
     setCurrentStep('tasks');
   };
 
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve({
+        url: reader.result,
+        filename: file.name,
+        type: file.type,
+      });
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const handleSubmit = async () => {
     if (submitting) return;
-    
+
     setSubmitting(true);
     setError('');
 
     try {
-      const taskResults = TASKS.map(task => ({
-        taskNumber: task.number,
-        section: task.section,
-        taskName: task.name,
-        taskDescription: task.description,
-        status: taskStatuses[task.number] || 'Good',
-        notes: taskNotes[task.number] || '',
-        actionType: (taskStatuses[task.number] === 'Good' || !taskStatuses[task.number]) ? 'None' : 'Handld',
-        actionLink: '',
-        actionText: '',
-        photos: taskPhotos[task.number] || [],
-      }));
+      // Convert all photos to base64
+      const taskResultsWithPhotos = await Promise.all(
+        TASKS.map(async (task) => {
+          const photos = taskPhotos[task.number] || [];
+          const convertedPhotos = await Promise.all(
+            photos.map(file => convertFileToBase64(file))
+          );
+
+          return {
+            taskNumber: task.number,
+            section: task.section,
+            taskName: task.name,
+            taskDescription: task.description,
+            status: taskStatuses[task.number] || 'Good',
+            notes: taskNotes[task.number] || '',
+            actionType: (taskStatuses[task.number] === 'Good' || !taskStatuses[task.number]) ? 'None' : 'Handld',
+            actionLink: '',
+            actionText: '',
+            photos: convertedPhotos,
+          };
+        })
+      );
 
       const response = await fetch('/api/reports/create', {
         method: 'POST',
@@ -246,7 +269,7 @@ export default function TechnicianForm() {
             dateCompleted: new Date().toISOString().split('T')[0],
             status: 'Draft',
           },
-          taskResults,
+          taskResults: taskResultsWithPhotos,
           sectionNotes,
         }),
       });
@@ -258,7 +281,7 @@ export default function TechnicianForm() {
 
       localStorage.removeItem(STORAGE_KEY);
       setSuccess(true);
-      
+
       setTimeout(() => {
         window.location.reload();
       }, 5000);

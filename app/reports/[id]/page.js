@@ -81,6 +81,7 @@ export default function ReportViewer() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedTask, setExpandedTask] = useState(null);
+  const [modalPhoto, setModalPhoto] = useState(null);
 
   useEffect(() => {
     async function fetchReport() {
@@ -425,56 +426,66 @@ export default function ReportViewer() {
                         </span>
                       </div>
 
-                      {isExpanded && (
-                        <>
-                          <div style={{ fontSize: '14px', color: '#4b5563', marginBottom: '10px', lineHeight: '1.5' }}>
-                            {TASK_DETAILS[task.taskNumber] || task.taskDescription}
-                          </div>
+                      <div style={{ fontSize: '14px', color: '#4b5563', marginBottom: '10px', lineHeight: '1.5' }}>
+                        {TASK_DETAILS[task.taskNumber] || task.taskDescription}
+                      </div>
 
-                          {task.notes && (
-                            <div style={{
-                              background: 'white',
-                              padding: '14px',
-                              borderRadius: '8px',
-                              fontSize: '13px',
-                              marginTop: '10px',
-                              border: '1px solid #d1d5db',
-                              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
-                            }}>
-                              <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {task.notes}
-                            </div>
-                          )}
-                        </>
+                      {task.notes && (
+                        <div style={{
+                          background: 'white',
+                          padding: '14px',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          marginTop: '10px',
+                          border: '1px solid #d1d5db',
+                          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
+                        }}>
+                          <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {task.notes}
+                        </div>
                       )}
 
-                      <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                        <button
-                          onClick={() => setExpandedTask(isExpanded ? null : task.id)}
-                          style={{
-                            background: 'white',
-                            color: '#2A54A1',
-                            border: '2px solid #2A54A1',
-                            padding: '8px 16px',
-                            borderRadius: '8px',
-                            fontSize: '13px',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#2A54A1';
-                            e.currentTarget.style.color = 'white';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'white';
-                            e.currentTarget.style.color = '#2A54A1';
-                          }}
-                        >
-                          {isExpanded ? '▲ Show Less' : '▼ Show More'}
-                        </button>
+                      {task.photos && task.photos.length > 0 && (
+                        <div style={{ marginTop: '12px' }}>
+                          <div style={{ fontSize: '13px', fontWeight: '600', color: '#2A54A1', marginBottom: '8px' }}>
+                            Photos ({task.photos.length})
+                          </div>
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            {task.photos.map((photo, index) => (
+                              <button
+                                key={index}
+                                onClick={() => setModalPhoto(photo)}
+                                style={{
+                                  width: '80px',
+                                  height: '80px',
+                                  borderRadius: '8px',
+                                  border: '2px solid #2A54A1',
+                                  overflow: 'hidden',
+                                  cursor: 'pointer',
+                                  padding: '0',
+                                  background: 'white',
+                                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                  transition: 'transform 0.2s'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                              >
+                                <img
+                                  src={photo.url}
+                                  alt={`Photo ${index + 1}`}
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover'
+                                  }}
+                                />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
-                        {serviceAction && (
+                      {serviceAction && (
+                        <div style={{ marginTop: '12px' }}>
                           <a
                             href={serviceAction.link}
                             target="_blank"
@@ -498,8 +509,8 @@ export default function ReportViewer() {
                               : '--> Make an introduction to a trusted vendor'
                             }
                           </a>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -618,12 +629,12 @@ export default function ReportViewer() {
           </div>
         </div>
 
-        <div style={{ 
-          textAlign: 'center', 
-          marginTop: '32px', 
-          paddingTop: '20px', 
-          borderTop: '2px solid #e5e7eb', 
-          color: '#999', 
+        <div style={{
+          textAlign: 'center',
+          marginTop: '32px',
+          paddingTop: '20px',
+          borderTop: '2px solid #e5e7eb',
+          color: '#999',
           fontSize: '13px',
           paddingBottom: '32px'
         }}>
@@ -635,6 +646,76 @@ export default function ReportViewer() {
           </p>
         </div>
       </div>
+
+      {/* Photo Modal */}
+      {modalPhoto && (
+        <div
+          onClick={() => setModalPhoto(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.85)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '20px'
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              maxWidth: '90vw',
+              maxHeight: '90vh',
+              background: 'white',
+              borderRadius: '12px',
+              padding: '20px',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+            }}
+          >
+            <button
+              onClick={() => setModalPhoto(null)}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                background: '#2A54A1',
+                color: 'white',
+                border: 'none',
+                borderRadius: '50%',
+                width: '36px',
+                height: '36px',
+                fontSize: '20px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                zIndex: 1
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#1e3a70'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#2A54A1'}
+            >
+              ×
+            </button>
+            <img
+              src={modalPhoto.url}
+              alt="Full size"
+              style={{
+                maxWidth: '100%',
+                maxHeight: 'calc(90vh - 40px)',
+                display: 'block',
+                borderRadius: '8px'
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
