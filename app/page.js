@@ -249,26 +249,43 @@ export default function TechnicianForm() {
           canvas.width = width;
           canvas.height = height;
 
-          // Draw and compress
+          // Draw image on canvas
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Convert to blob with 60% quality
-          canvas.toBlob(
-            (blob) => {
-              if (blob) {
-                // Create a new File object from the blob
-                const compressedFile = new File([blob], file.name, {
-                  type: 'image/jpeg',
-                  lastModified: Date.now(),
-                });
-                resolve(compressedFile);
-              } else {
-                reject(new Error('Failed to compress image'));
-              }
-            },
-            'image/jpeg',
-            0.6 // 60% quality
-          );
+          // Iteratively compress until under 500KB
+          const MAX_FILE_SIZE = 500 * 1024; // 500KB in bytes
+          const MIN_QUALITY = 0.2; // Don't go below 20% quality
+          let quality = 0.7; // Start with 70% quality
+
+          const tryCompress = () => {
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  reject(new Error('Failed to compress image'));
+                  return;
+                }
+
+                // If the blob is under 500KB or we've reached minimum quality, use it
+                if (blob.size <= MAX_FILE_SIZE || quality <= MIN_QUALITY) {
+                  const compressedFile = new File([blob], file.name, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now(),
+                  });
+                  console.log(`Image compressed to ${(blob.size / 1024).toFixed(2)}KB at ${(quality * 100).toFixed(0)}% quality`);
+                  resolve(compressedFile);
+                } else {
+                  // Reduce quality and try again
+                  quality -= 0.05; // Reduce by 5%
+                  console.log(`Image size ${(blob.size / 1024).toFixed(2)}KB exceeds 500KB, reducing quality to ${(quality * 100).toFixed(0)}%`);
+                  tryCompress();
+                }
+              },
+              'image/jpeg',
+              quality
+            );
+          };
+
+          tryCompress();
         };
 
         img.onerror = () => reject(new Error('Failed to load image'));
