@@ -444,7 +444,7 @@ export default function TechnicianForm() {
             {/* Summary Stats */}
             <div style={{ marginBottom: '24px', padding: '16px', background: '#2A54A1', color: 'white', borderRadius: '8px' }}>
               <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px' }}>
-                Inspection Summary
+                Report Summary
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', textAlign: 'center' }}>
                 <div>
