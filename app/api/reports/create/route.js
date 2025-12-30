@@ -1,7 +1,7 @@
 // app/api/reports/create/route.js
 // API endpoint to create a new home tuneup report
 
-import { createReport, createTaskResults } from '../../../../lib/airtable-tuneup';
+import { createReport, createTaskResults, getTaskResults, verifyTaskResultsTableConfiguration } from '../../../../lib/airtable-tuneup';
 
 export async function POST(request) {
   try {
@@ -25,9 +25,13 @@ export async function POST(request) {
       );
     }
 
+    // Step 1: Verify Airtable field configuration
+    console.log('[API] Verifying Airtable table configuration...');
+    await verifyTaskResultsTableConfiguration();
+    console.log('[API] Configuration verification passed');
+
+    // Step 2: Create the report with section notes
     console.log('[API] Creating report...');
-    
-    // Step 1: Create the report with section notes
     const report = await createReport({
       ...reportData,
       sectionNotes,
@@ -36,7 +40,7 @@ export async function POST(request) {
     console.log('[API] Report ID type:', typeof report.id);
     console.log('[API] Full report object:', JSON.stringify(report, null, 2));
 
-    // Step 2: Create task results linked to this report (WITHOUT photos)
+    // Step 3: Create task results linked to this report (WITHOUT photos)
     const tasksWithReportId = taskResults.map(task => {
       const { photos, ...taskWithoutPhotos } = task;
       return {
@@ -52,7 +56,22 @@ export async function POST(request) {
     const savedTasks = await createTaskResults(tasksWithReportId);
     console.log('[API] Task results created:', savedTasks.length);
 
-    // Step 3: Return success
+    // Step 4: VALIDATION - Verify tasks are actually linked to the report
+    console.log('[API] Validating task linking...');
+    const verifyTasks = await getTaskResults(report.id);
+    console.log('[API] Validation query returned:', verifyTasks.length, 'tasks');
+
+    if (verifyTasks.length === 0) {
+      console.error('[API] CRITICAL: Tasks created but not linked!');
+      console.error('[API] Report ID used:', report.id);
+      console.error('[API] Sample saved task:', JSON.stringify(savedTasks[0], null, 2));
+      console.error('[API] Tasks created:', savedTasks.length);
+      throw new Error(`Task linking validation failed - ${savedTasks.length} tasks created but 0 found when querying. Check server logs for details.`);
+    }
+
+    console.log('[API] ✓ Validation passed:', verifyTasks.length, 'tasks successfully linked to report');
+
+    // Step 5: Return success
     return Response.json({
       success: true,
       reportId: report.id,
