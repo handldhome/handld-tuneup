@@ -139,16 +139,6 @@ export default function ReportViewer() {
     }
   }, [reportId]);
 
-  // Debug logging for tasks - separate useEffect to avoid render issues
-  useEffect(() => {
-    if (tasks.length > 0) {
-      console.log('[Report Viewer] Tasks updated - count:', tasks.length);
-      console.log('[Report Viewer] First task sample:', tasks[0]);
-    } else if (!loading) {
-      console.log('[Report Viewer] No tasks loaded');
-    }
-  }, [tasks, loading]);
-
   const generatePunchList = () => {
     const priorityTasks = tasks.filter(task => 
       task.status === 'Repair Soon' || task.status === 'Urgent'
@@ -307,10 +297,16 @@ export default function ReportViewer() {
     );
   }
 
+  console.log('[Report Viewer] Render - tasks array length:', tasks.length);
+  console.log('[Report Viewer] Render - tasks:', tasks);
+
   // Include Monitor, Repair Soon, and Urgent status
   const priorityTasks = tasks.filter(task =>
     task.status === 'Monitor' || task.status === 'Repair Soon' || task.status === 'Urgent'
   );
+
+  console.log('[Report Viewer] Render - priorityTasks length:', priorityTasks.length);
+  console.log('[Report Viewer] Render - priorityTasks:', priorityTasks);
 
   const tasksBySection = priorityTasks.reduce((acc, task) => {
     if (!acc[task.section]) acc[task.section] = [];

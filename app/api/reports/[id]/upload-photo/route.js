@@ -2,11 +2,10 @@
 // API endpoint to upload a single photo to a task result
 
 import { uploadPhotoToTask } from '../../../../../lib/airtable-tuneup';
-import { uploadBase64Image } from '../../../../../lib/cloudinary';
 
 export async function POST(request, { params }) {
   try {
-    const { id: reportId } = await params;
+    const { id: reportId } = params;
     const body = await request.json();
     const { taskNumber, photo } = body;
 
@@ -27,25 +26,14 @@ export async function POST(request, { params }) {
       );
     }
 
-    // Step 1: Upload to Cloudinary to get public URL
-    console.log('[API] Uploading to Cloudinary...');
-    const publicUrl = await uploadBase64Image(photo.url, photo.filename);
-    console.log('[API] Cloudinary upload successful:', publicUrl);
-
-    // Step 2: Save public URL to Airtable
-    const photoForAirtable = {
-      url: publicUrl,
-      filename: photo.filename,
-    };
-
-    const result = await uploadPhotoToTask(reportId, taskNumber, photoForAirtable);
+    // Upload the photo to the task result
+    const result = await uploadPhotoToTask(reportId, taskNumber, photo);
 
     console.log(`[API] Photo uploaded successfully for task ${taskNumber}`);
 
     return Response.json({
       success: true,
       taskId: result.taskId,
-      photoUrl: publicUrl,
     });
 
   } catch (error) {

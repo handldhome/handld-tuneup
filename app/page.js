@@ -56,7 +56,8 @@ const SECTIONS = [
 
 const TECHNICIAN_OPTIONS = [
   "Benny Sanches",
-  "Salvador Gonzales",
+  "Mike Rodriguez",
+  "Carlos Santos",
 ];
 
 const STORAGE_KEY = 'handld-tuneup-progress';
