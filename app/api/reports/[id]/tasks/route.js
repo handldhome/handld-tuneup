@@ -5,9 +5,14 @@ import { getTaskResults } from '../../../../../lib/airtable-tuneup';
 
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
-    
+    // In Next.js 14+, params might be a Promise
+    const { id } = await params;
+
+    console.log('[API] Route called with id:', id);
+    console.log('[API] ID type:', typeof id);
+
     if (!id) {
+      console.error('[API] No ID provided');
       return Response.json(
         { error: 'Report ID is required' },
         { status: 400 }
@@ -15,9 +20,11 @@ export async function GET(request, { params }) {
     }
 
     console.log('[API] Fetching tasks for report:', id);
-    
+
     const tasks = await getTaskResults(id);
-    
+
+    console.log('[API] Returning', tasks.length, 'tasks');
+
     return Response.json(tasks);
 
   } catch (error) {
