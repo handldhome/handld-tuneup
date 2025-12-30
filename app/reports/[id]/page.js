@@ -85,17 +85,23 @@ export default function ReportViewer() {
   useEffect(() => {
     async function fetchReport() {
       try {
+        console.log('[Report Viewer] Fetching report:', reportId);
         const reportRes = await fetch(`/api/reports/${reportId}`);
         if (!reportRes.ok) throw new Error('Report not found');
         const reportData = await reportRes.json();
+        console.log('[Report Viewer] Report data received:', reportData);
         setReport(reportData);
 
+        console.log('[Report Viewer] Fetching tasks for report:', reportId);
         const tasksRes = await fetch(`/api/reports/${reportId}/tasks`);
         if (!tasksRes.ok) throw new Error('Tasks not found');
         const tasksData = await tasksRes.json();
+        console.log('[Report Viewer] Tasks data received:', tasksData);
+        console.log('[Report Viewer] Number of tasks:', tasksData.length);
         setTasks(tasksData);
 
       } catch (err) {
+        console.error('[Report Viewer] Error:', err);
         setError(err.message);
       } finally {
         setLoading(false);
