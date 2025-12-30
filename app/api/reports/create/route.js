@@ -32,8 +32,10 @@ export async function POST(request) {
       ...reportData,
       sectionNotes,
     });
-    console.log('[API] Report created:', report.id);
-    
+    console.log('[API] Report created with ID:', report.id);
+    console.log('[API] Report ID type:', typeof report.id);
+    console.log('[API] Full report object:', JSON.stringify(report, null, 2));
+
     // Step 2: Create task results linked to this report (WITHOUT photos)
     const tasksWithReportId = taskResults.map(task => {
       const { photos, ...taskWithoutPhotos } = task;
@@ -44,6 +46,8 @@ export async function POST(request) {
     });
 
     console.log('[API] Creating task results...');
+    console.log('[API] Number of tasks to create:', tasksWithReportId.length);
+    console.log('[API] Sample task with reportId:', JSON.stringify(tasksWithReportId[0], null, 2));
 
     const savedTasks = await createTaskResults(tasksWithReportId);
     console.log('[API] Task results created:', savedTasks.length);
