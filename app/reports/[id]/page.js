@@ -85,23 +85,46 @@ export default function ReportViewer() {
   useEffect(() => {
     async function fetchReport() {
       try {
-        console.log('[Report Viewer] Fetching report:', reportId);
+        console.log('[Report Viewer] Starting fetch...');
+        console.log('[Report Viewer] reportId:', reportId);
+        console.log('[Report Viewer] reportId type:', typeof reportId);
+
         const reportRes = await fetch(`/api/reports/${reportId}`);
+        console.log('[Report Viewer] Report response status:', reportRes.status);
         if (!reportRes.ok) throw new Error('Report not found');
         const reportData = await reportRes.json();
         console.log('[Report Viewer] Report data received:', reportData);
         setReport(reportData);
 
         console.log('[Report Viewer] Fetching tasks for report:', reportId);
-        const tasksRes = await fetch(`/api/reports/${reportId}/tasks`);
-        if (!tasksRes.ok) throw new Error('Tasks not found');
+        const tasksUrl = `/api/reports/${reportId}/tasks`;
+        console.log('[Report Viewer] Tasks URL:', tasksUrl);
+        const tasksRes = await fetch(tasksUrl);
+        console.log('[Report Viewer] Tasks response status:', tasksRes.status);
+        console.log('[Report Viewer] Tasks response ok:', tasksRes.ok);
+
+        if (!tasksRes.ok) {
+          const errorData = await tasksRes.json();
+          console.error('[Report Viewer] Tasks error response:', errorData);
+          throw new Error('Tasks not found');
+        }
+
         const tasksData = await tasksRes.json();
         console.log('[Report Viewer] Tasks data received:', tasksData);
-        console.log('[Report Viewer] Number of tasks:', tasksData.length);
+        console.log('[Report Viewer] Tasks data type:', typeof tasksData);
+        console.log('[Report Viewer] Is tasks data an array?', Array.isArray(tasksData));
+        console.log('[Report Viewer] Number of tasks:', tasksData?.length || 0);
+
+        if (Array.isArray(tasksData) && tasksData.length > 0) {
+          console.log('[Report Viewer] First task sample:', tasksData[0]);
+        }
+
         setTasks(tasksData);
+        console.log('[Report Viewer] Tasks state updated');
 
       } catch (err) {
         console.error('[Report Viewer] Error:', err);
+        console.error('[Report Viewer] Error stack:', err.stack);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -109,7 +132,10 @@ export default function ReportViewer() {
     }
 
     if (reportId) {
+      console.log('[Report Viewer] useEffect triggered with reportId:', reportId);
       fetchReport();
+    } else {
+      console.log('[Report Viewer] useEffect triggered but no reportId');
     }
   }, [reportId]);
 
@@ -271,9 +297,16 @@ export default function ReportViewer() {
     );
   }
 
-  const priorityTasks = tasks.filter(task => 
-    task.status === 'Repair Soon' || task.status === 'Urgent'
+  console.log('[Report Viewer] Render - tasks array length:', tasks.length);
+  console.log('[Report Viewer] Render - tasks:', tasks);
+
+  // Include Monitor, Repair Soon, and Urgent status
+  const priorityTasks = tasks.filter(task =>
+    task.status === 'Monitor' || task.status === 'Repair Soon' || task.status === 'Urgent'
   );
+
+  console.log('[Report Viewer] Render - priorityTasks length:', priorityTasks.length);
+  console.log('[Report Viewer] Render - priorityTasks:', priorityTasks);
 
   const tasksBySection = priorityTasks.reduce((acc, task) => {
     if (!acc[task.section]) acc[task.section] = [];
