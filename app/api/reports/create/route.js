@@ -57,16 +57,40 @@ export async function POST(request) {
     console.log('[API] Task results created:', savedTasks.length);
 
     // Step 4: VALIDATION - Verify tasks are actually linked to the report
+    // Note: Airtable's linked record fields may take a moment to propagate
     console.log('[API] Validating task linking...');
-    const verifyTasks = await getTaskResults(report.id);
-    console.log('[API] Validation query returned:', verifyTasks.length, 'tasks');
+    console.log('[API] Expected:', savedTasks.length, 'tasks');
 
+    // Wait briefly for Airtable to propagate linked records
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    let verifyTasks = await getTaskResults(report.id);
+    console.log('[API] First validation query returned:', verifyTasks.length, 'tasks');
+
+    // If not all tasks found, retry once after another delay
+    if (verifyTasks.length < savedTasks.length) {
+      console.log('[API] Not all tasks found, retrying after delay...');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      verifyTasks = await getTaskResults(report.id);
+      console.log('[API] Retry query returned:', verifyTasks.length, 'tasks');
+    }
+
+    // Validation: Check that ALL tasks were linked
     if (verifyTasks.length === 0) {
-      console.error('[API] CRITICAL: Tasks created but not linked!');
+      console.error('[API] CRITICAL: Tasks created but ZERO linked!');
       console.error('[API] Report ID used:', report.id);
       console.error('[API] Sample saved task:', JSON.stringify(savedTasks[0], null, 2));
       console.error('[API] Tasks created:', savedTasks.length);
       throw new Error(`Task linking validation failed - ${savedTasks.length} tasks created but 0 found when querying. Check server logs for details.`);
+    }
+
+    if (verifyTasks.length !== savedTasks.length) {
+      console.error('[API] WARNING: Partial task linking!');
+      console.error('[API] Created:', savedTasks.length, 'tasks');
+      console.error('[API] Found:', verifyTasks.length, 'tasks');
+      console.error('[API] Missing:', savedTasks.length - verifyTasks.length, 'tasks');
+      console.error('[API] This may be an Airtable propagation delay issue');
+      throw new Error(`Task linking validation failed - Created ${savedTasks.length} tasks but only ${verifyTasks.length} found when querying. Airtable may need more time to propagate linked records.`);
     }
 
     console.log('[API] ✓ Validation passed:', verifyTasks.length, 'tasks successfully linked to report');
