@@ -23,6 +23,16 @@ export async function GET(request, { params }) {
 
     const tasks = await getTaskResults(id);
 
+    console.log('[API] getTaskResults returned:', tasks.length, 'tasks');
+
+    if (tasks.length === 0) {
+      console.error('[API] WARNING: No tasks found for report:', id);
+      console.error('[API] This report should have tasks but returned empty array');
+    } else {
+      console.log('[API] SUCCESS: Found', tasks.length, 'tasks');
+      console.log('[API] First task:', JSON.stringify(tasks[0]));
+    }
+
     console.log('[API] Returning', tasks.length, 'tasks');
 
     return Response.json(tasks);
