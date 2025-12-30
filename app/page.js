@@ -85,6 +85,8 @@ export default function TechnicianForm() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
 
   // Load saved progress on mount
   useEffect(() => {
@@ -225,6 +227,9 @@ export default function TechnicianForm() {
         return;
       }
 
+      // Log original file size
+      console.log(`Original image size: ${(file.size / 1024).toFixed(2)}KB (${file.name})`);
+
       const reader = new FileReader();
       reader.readAsDataURL(file);
 
@@ -271,7 +276,10 @@ export default function TechnicianForm() {
                     type: 'image/jpeg',
                     lastModified: Date.now(),
                   });
-                  console.log(`Image compressed to ${(blob.size / 1024).toFixed(2)}KB at ${(quality * 100).toFixed(0)}% quality`);
+                  const originalSizeKB = (file.size / 1024).toFixed(2);
+                  const compressedSizeKB = (blob.size / 1024).toFixed(2);
+                  const compressionRatio = ((1 - blob.size / file.size) * 100).toFixed(1);
+                  console.log(`✓ Compressed ${file.name}: ${originalSizeKB}KB → ${compressedSizeKB}KB (${compressionRatio}% reduction) at ${(quality * 100).toFixed(0)}% quality`);
                   resolve(compressedFile);
                 } else {
                   // Reduce quality and try again
@@ -315,32 +323,20 @@ export default function TechnicianForm() {
     setError('');
 
     try {
-      // Compress and convert all photos to base64
-      const taskResultsWithPhotos = await Promise.all(
-        TASKS.map(async (task) => {
-          const photos = taskPhotos[task.number] || [];
-          const convertedPhotos = await Promise.all(
-            photos.map(async (file) => {
-              // Compress image first, then convert to base64
-              const compressedFile = await compressImage(file);
-              return convertFileToBase64(compressedFile);
-            })
-          );
+      // Step 1: Create task results WITHOUT photos
+      const taskResultsWithoutPhotos = TASKS.map((task) => ({
+        taskNumber: task.number,
+        section: task.section,
+        taskName: task.name,
+        taskDescription: task.description,
+        status: taskStatuses[task.number] || 'Good',
+        notes: taskNotes[task.number] || '',
+        actionType: (taskStatuses[task.number] === 'Good' || !taskStatuses[task.number]) ? 'None' : 'Handld',
+        actionLink: '',
+        actionText: '',
+      }));
 
-          return {
-            taskNumber: task.number,
-            section: task.section,
-            taskName: task.name,
-            taskDescription: task.description,
-            status: taskStatuses[task.number] || 'Good',
-            notes: taskNotes[task.number] || '',
-            actionType: (taskStatuses[task.number] === 'Good' || !taskStatuses[task.number]) ? 'None' : 'Handld',
-            actionLink: '',
-            actionText: '',
-            photos: convertedPhotos,
-          };
-        })
-      );
+      console.log('[Form] Creating report without photos...');
 
       const response = await fetch('/api/reports/create', {
         method: 'POST',
@@ -351,7 +347,7 @@ export default function TechnicianForm() {
             dateCompleted: new Date().toISOString().split('T')[0],
             status: 'Draft',
           },
-          taskResults: taskResultsWithPhotos,
+          taskResults: taskResultsWithoutPhotos,
           sectionNotes,
         }),
       });
@@ -359,6 +355,71 @@ export default function TechnicianForm() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.details || 'Failed to create report');
+      }
+
+      const { reportId } = await response.json();
+      console.log('[Form] Report created:', reportId);
+
+      // Step 2: Upload photos one by one
+      const photoUploadTasks = [];
+      TASKS.forEach((task) => {
+        const photos = taskPhotos[task.number] || [];
+        photos.forEach((file) => {
+          photoUploadTasks.push({
+            taskNumber: task.number,
+            file,
+          });
+        });
+      });
+
+      if (photoUploadTasks.length > 0) {
+        setUploadingPhotos(true);
+        setUploadProgress({ current: 0, total: photoUploadTasks.length });
+        console.log(`[Form] Uploading ${photoUploadTasks.length} photos...`);
+
+        const failedUploads = [];
+
+        for (let i = 0; i < photoUploadTasks.length; i++) {
+          const { taskNumber, file } = photoUploadTasks[i];
+
+          try {
+            setUploadProgress({ current: i + 1, total: photoUploadTasks.length });
+            console.log(`[Form] Uploading photo ${i + 1}/${photoUploadTasks.length} for task ${taskNumber}...`);
+
+            // Compress and convert to base64
+            const compressedFile = await compressImage(file);
+            const photoData = await convertFileToBase64(compressedFile);
+
+            // Upload to API
+            const uploadResponse = await fetch(`/api/reports/${reportId}/upload-photo`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                taskNumber,
+                photo: photoData,
+              }),
+            });
+
+            if (!uploadResponse.ok) {
+              const errorData = await uploadResponse.json();
+              throw new Error(errorData.details || 'Failed to upload photo');
+            }
+
+            console.log(`[Form] Photo ${i + 1} uploaded successfully`);
+
+          } catch (photoErr) {
+            console.error(`[Form] Failed to upload photo ${i + 1}:`, photoErr);
+            failedUploads.push({ taskNumber, file: file.name, error: photoErr.message });
+            // Continue with remaining photos
+          }
+        }
+
+        setUploadingPhotos(false);
+
+        if (failedUploads.length > 0) {
+          console.warn('[Form] Some photos failed to upload:', failedUploads);
+          setError(`Report created, but ${failedUploads.length} photo(s) failed to upload. Please try again later.`);
+        }
       }
 
       localStorage.removeItem(STORAGE_KEY);
@@ -372,6 +433,7 @@ export default function TechnicianForm() {
       console.error('Submission error:', err);
       setError(err.message);
       setSubmitting(false);
+      setUploadingPhotos(false);
     }
   };
 
@@ -614,16 +676,40 @@ export default function TechnicianForm() {
             )}
 
             {error && (
-              <div style={{ 
-                background: '#fee2e2', 
+              <div style={{
+                background: '#fee2e2',
                 border: '1px solid #fca5a5',
-                color: '#991b1b', 
-                padding: '12px', 
-                borderRadius: '8px', 
+                color: '#991b1b',
+                padding: '12px',
+                borderRadius: '8px',
                 marginBottom: '16px',
                 fontSize: '14px'
               }}>
                 <strong>Error:</strong> {error}
+              </div>
+            )}
+
+            {uploadingPhotos && (
+              <div style={{
+                background: '#dbeafe',
+                border: '1px solid #3b82f6',
+                color: '#1e40af',
+                padding: '16px',
+                borderRadius: '8px',
+                marginBottom: '16px',
+                fontSize: '14px'
+              }}>
+                <div style={{ marginBottom: '8px', fontWeight: '600' }}>
+                  Uploading photo {uploadProgress.current} of {uploadProgress.total}...
+                </div>
+                <div style={{ background: '#e0e0e0', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                  <div style={{
+                    background: '#2A54A1',
+                    height: '100%',
+                    width: `${(uploadProgress.current / uploadProgress.total) * 100}%`,
+                    transition: 'width 0.3s'
+                  }} />
+                </div>
               </div>
             )}
 
@@ -635,7 +721,7 @@ export default function TechnicianForm() {
                 }}
                 className="button"
                 style={{ flex: 1, background: '#9ca3af' }}
-                disabled={submitting}
+                disabled={submitting || uploadingPhotos}
               >
                 ← Edit Report
               </button>
@@ -643,9 +729,13 @@ export default function TechnicianForm() {
                 onClick={handleSubmit}
                 className="button"
                 style={{ flex: 1, background: '#2A54A1' }}
-                disabled={submitting}
+                disabled={submitting || uploadingPhotos}
               >
-                {submitting ? 'Submitting...' : 'Submit Report'}
+                {uploadingPhotos
+                  ? `Uploading ${uploadProgress.current}/${uploadProgress.total}...`
+                  : submitting
+                    ? 'Creating Report...'
+                    : 'Submit Report'}
               </button>
             </div>
           </div>

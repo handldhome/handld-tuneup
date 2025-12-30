@@ -34,14 +34,17 @@ export async function POST(request) {
     });
     console.log('[API] Report created:', report.id);
     
-    // Step 2: Create task results linked to this report
-    const tasksWithReportId = taskResults.map(task => ({
-      ...task,
-      reportId: report.id,
-    }));
+    // Step 2: Create task results linked to this report (WITHOUT photos)
+    const tasksWithReportId = taskResults.map(task => {
+      const { photos, ...taskWithoutPhotos } = task;
+      return {
+        ...taskWithoutPhotos,
+        reportId: report.id,
+      };
+    });
 
     console.log('[API] Creating task results...');
-    
+
     const savedTasks = await createTaskResults(tasksWithReportId);
     console.log('[API] Task results created:', savedTasks.length);
 
