@@ -66,7 +66,7 @@ export default function TechnicianForm() {
   const [currentStep, setCurrentStep] = useState('customer-info');
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
-  
+
   const [customerInfo, setCustomerInfo] = useState({
     customerName: '',
     customerEmail: '',
@@ -81,12 +81,43 @@ export default function TechnicianForm() {
   const [sectionNotes, setSectionNotes] = useState({});
   const [showDetails, setShowDetails] = useState({});
   const [isRecording, setIsRecording] = useState(false);
-  
+
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
+
+  // Store master tasks from Airtable with default action types
+  const [masterTasks, setMasterTasks] = useState({});
+
+  // Fetch master tasks from Airtable on mount
+  useEffect(() => {
+    const fetchMasterTasks = async () => {
+      try {
+        const response = await fetch('/api/master-tasks');
+        const tasks = await response.json();
+
+        // Create a map of task number -> default action type
+        const taskMap = {};
+        tasks.forEach(task => {
+          taskMap[task.taskNumber] = {
+            defaultActionType: task.defaultActionType || 'none',
+            defaultActionLink: task.defaultActionLink || '',
+            defaultActionText: task.defaultActionText || ''
+          };
+        });
+
+        setMasterTasks(taskMap);
+        console.log('[Form] Master tasks loaded:', taskMap);
+      } catch (err) {
+        console.error('[Form] Failed to fetch master tasks:', err);
+        // Continue with empty map - will use fallback logic
+      }
+    };
+
+    fetchMasterTasks();
+  }, []);
 
   // Load saved progress on mount
   useEffect(() => {
@@ -324,17 +355,37 @@ export default function TechnicianForm() {
 
     try {
       // Step 1: Create task results WITHOUT photos
-      const taskResultsWithoutPhotos = TASKS.map((task) => ({
-        taskNumber: task.number,
-        section: task.section,
-        taskName: task.name,
-        taskDescription: task.description,
-        status: taskStatuses[task.number] || 'Good',
-        notes: taskNotes[task.number] || '',
-        actionType: (taskStatuses[task.number] === 'Good' || !taskStatuses[task.number]) ? 'None' : 'Handld',
-        actionLink: '',
-        actionText: '',
-      }));
+      const taskResultsWithoutPhotos = TASKS.map((task) => {
+        const status = taskStatuses[task.number] || 'Good';
+        const masterTask = masterTasks[task.number] || {};
+
+        // Determine action type based on status and master task defaults
+        let actionType, actionLink, actionText;
+
+        if (status === 'Good') {
+          // Good status = no action needed
+          actionType = 'none';
+          actionLink = '';
+          actionText = '';
+        } else {
+          // Use default action type from master task list
+          actionType = masterTask.defaultActionType || 'handld';
+          actionLink = masterTask.defaultActionLink || '';
+          actionText = masterTask.defaultActionText || '';
+        }
+
+        return {
+          taskNumber: task.number,
+          section: task.section,
+          taskName: task.name,
+          taskDescription: task.description,
+          status,
+          notes: taskNotes[task.number] || '',
+          actionType,
+          actionLink,
+          actionText,
+        };
+      });
 
       console.log('[Form] Creating report without photos...');
 
