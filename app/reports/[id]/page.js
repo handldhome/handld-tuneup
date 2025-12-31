@@ -80,7 +80,7 @@ export default function ReportViewer() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [expandedTask, setExpandedTask] = useState(null);
+  const [modalTask, setModalTask] = useState(null);
 
   useEffect(() => {
     async function fetchReport() {
@@ -538,9 +538,9 @@ export default function ReportViewer() {
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px' }}>
             {tasks.sort((a, b) => a.taskNumber - b.taskNumber).map(task => (
-              <div 
-                key={task.id} 
-                style={{ 
+              <div
+                key={task.id}
+                style={{
                   padding: '10px',
                   background: getStatusBgColor(task.status),
                   borderRadius: '8px',
@@ -549,12 +549,12 @@ export default function ReportViewer() {
                   cursor: 'pointer',
                   transition: 'all 0.2s'
                 }}
-                onClick={() => setExpandedTask(expandedTask === task.id ? null : task.id)}
+                onClick={() => setModalTask(task)}
               >
                 <div style={{ fontWeight: '600', marginBottom: '4px', color: '#1f2937', fontSize: '13px' }}>
                   #{task.taskNumber}: {task.taskName}
                 </div>
-                <div style={{ 
+                <div style={{
                   display: 'inline-block',
                   padding: '2px 8px',
                   borderRadius: '10px',
@@ -565,22 +565,159 @@ export default function ReportViewer() {
                 }}>
                   {task.status}
                 </div>
-                {expandedTask === task.id && (
-                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #d1d5db' }}>
-                    <div style={{ fontSize: '11px', color: '#4b5563', lineHeight: '1.4', marginBottom: '6px' }}>
-                      {TASK_DETAILS[task.taskNumber] || task.taskDescription}
-                    </div>
-                    {task.notes && (
-                      <div style={{ fontSize: '11px', color: '#2A54A1', fontStyle: 'italic' }}>
-                        <strong>Notes:</strong> {task.notes}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             ))}
           </div>
         </div>
+
+        {/* Task Detail Modal */}
+        {modalTask && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.6)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+              padding: '20px'
+            }}
+            onClick={() => setModalTask(null)}
+          >
+            <div
+              style={{
+                background: 'white',
+                borderRadius: '12px',
+                maxWidth: '600px',
+                width: '100%',
+                maxHeight: '80vh',
+                overflow: 'auto',
+                position: 'relative',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+                animation: 'slideIn 0.2s ease-out'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setModalTask(null)}
+                style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  background: '#f3f4f6',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  cursor: 'pointer',
+                  fontSize: '20px',
+                  color: '#6b7280',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#e5e7eb';
+                  e.target.style.color = '#1f2937';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#f3f4f6';
+                  e.target.style.color = '#6b7280';
+                }}
+              >
+                ×
+              </button>
+
+              {/* Modal content */}
+              <div style={{ padding: '32px' }}>
+                <div style={{
+                  display: 'inline-block',
+                  padding: '4px 12px',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  background: getStatusColor(modalTask.status),
+                  color: 'white',
+                  marginBottom: '12px'
+                }}>
+                  {modalTask.status}
+                </div>
+
+                <h3 style={{
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  color: '#1f2937',
+                  marginBottom: '8px'
+                }}>
+                  Task #{modalTask.taskNumber}: {modalTask.taskName}
+                </h3>
+
+                <p style={{
+                  fontSize: '14px',
+                  color: '#6b7280',
+                  marginBottom: '20px',
+                  fontWeight: '500'
+                }}>
+                  {modalTask.section}
+                </p>
+
+                <div style={{
+                  background: '#f9fafb',
+                  padding: '16px',
+                  borderRadius: '8px',
+                  marginBottom: '16px'
+                }}>
+                  <h4 style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#2A54A1',
+                    marginBottom: '8px'
+                  }}>
+                    Task Description
+                  </h4>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#4b5563',
+                    lineHeight: '1.6'
+                  }}>
+                    {TASK_DETAILS[modalTask.taskNumber] || modalTask.taskDescription}
+                  </p>
+                </div>
+
+                {modalTask.notes && (
+                  <div style={{
+                    background: '#eff6ff',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    borderLeft: '4px solid #2A54A1'
+                  }}>
+                    <h4 style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#2A54A1',
+                      marginBottom: '8px'
+                    }}>
+                      Technician Notes
+                    </h4>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#1e40af',
+                      lineHeight: '1.6'
+                    }}>
+                      {modalTask.notes}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="card" style={{ background: '#2A54A1', color: 'white', textAlign: 'center', marginTop: '32px', padding: '32px 24px' }}>
           <h3 style={{ fontSize: '26px', fontWeight: 'bold', marginBottom: '12px' }}>
