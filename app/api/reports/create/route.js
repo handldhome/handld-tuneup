@@ -35,6 +35,13 @@ export async function POST(request) {
     console.log('[API] Report created:', report.id);
     
     // Step 2: Create task results linked to this report (WITHOUT photos)
+    console.error('[API] ===== REPORT ID DEBUG =====');
+    console.error('[API] report object keys:', Object.keys(report));
+    console.error('[API] report.id:', report.id);
+    console.error('[API] report.recordId:', report.recordId);
+    console.error('[API] report["Report ID"]:', report['Report ID']);
+    console.error('[API] ===============================');
+
     const tasksWithReportId = taskResults.map(task => {
       const { photos, ...taskWithoutPhotos } = task;
       return {
@@ -44,6 +51,7 @@ export async function POST(request) {
     });
 
     console.log('[API] Creating task results...');
+    console.error('[API] First task reportId:', tasksWithReportId[0]?.reportId);
 
     const savedTasks = await createTaskResults(tasksWithReportId);
     console.log('[API] Task results created:', savedTasks.length);
