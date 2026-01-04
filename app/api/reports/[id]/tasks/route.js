@@ -5,8 +5,8 @@ import { getTaskResults } from '../../../../../lib/airtable-tuneup';
 
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
-    
+    const { id } = await params;
+
     if (!id) {
       return Response.json(
         { error: 'Report ID is required' },
@@ -15,9 +15,12 @@ export async function GET(request, { params }) {
     }
 
     console.log('[API] Fetching tasks for report:', id);
-    
+
     const tasks = await getTaskResults(id);
-    
+
+    console.log('[API] Returning', tasks.length, 'tasks');
+    console.log('[API] First task sample:', tasks[0] ? JSON.stringify(tasks[0]) : 'none');
+
     return Response.json(tasks);
 
   } catch (error) {

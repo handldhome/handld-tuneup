@@ -5,7 +5,7 @@ import { getReport } from '../../../../lib/airtable-tuneup';
 
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     if (!id) {
       return Response.json(
