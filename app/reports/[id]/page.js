@@ -81,6 +81,7 @@ export default function ReportViewer() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalTask, setModalTask] = useState(null);
+  const [photoViewerTask, setPhotoViewerTask] = useState(null);
 
   useEffect(() => {
     async function fetchReport() {
@@ -483,14 +484,14 @@ export default function ReportViewer() {
                       <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                         {task.photos && task.photos.length > 0 && (
                           <button
-                            onClick={() => setModalTask(task)}
+                            onClick={() => setPhotoViewerTask(task)}
                             style={{
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '8px',
                               fontSize: '14px',
                               padding: '10px 20px',
-                              background: '#10b981',
+                              background: '#2A54A1',
                               color: 'white',
                               border: 'none',
                               borderRadius: '8px',
@@ -591,6 +592,136 @@ export default function ReportViewer() {
             ))}
           </div>
         </div>
+
+        {/* Photo Viewer Modal */}
+        {photoViewerTask && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.8)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+              padding: '20px'
+            }}
+            onClick={() => setPhotoViewerTask(null)}
+          >
+            <div
+              style={{
+                background: 'white',
+                borderRadius: '12px',
+                maxWidth: '800px',
+                width: '100%',
+                maxHeight: '90vh',
+                overflow: 'auto',
+                position: 'relative',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+                padding: '24px'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setPhotoViewerTask(null)}
+                style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  background: '#f3f4f6',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  cursor: 'pointer',
+                  fontSize: '20px',
+                  color: '#6b7280',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#e5e7eb';
+                  e.target.style.color = '#1f2937';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#f3f4f6';
+                  e.target.style.color = '#6b7280';
+                }}
+              >
+                ×
+              </button>
+
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: 'bold',
+                color: '#2A54A1',
+                marginBottom: '20px',
+                paddingRight: '40px'
+              }}>
+                Task #{photoViewerTask.taskNumber}: {photoViewerTask.taskName}
+              </h3>
+
+              {photoViewerTask.photos && photoViewerTask.photos.length > 0 && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                  gap: '16px'
+                }}>
+                  {photoViewerTask.photos.map((photo, index) => {
+                    const photoUrl = photo.url || photo.thumbnails?.large?.url || photo.thumbnails?.full?.url;
+                    const photoFilename = photo.filename || `Photo ${index + 1}`;
+
+                    return (
+                      <a
+                        key={index}
+                        href={photoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'block',
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          border: '2px solid #e5e7eb',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.border = '2px solid #2A54A1';
+                          e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.border = '2px solid #e5e7eb';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
+                      >
+                        <img
+                          src={photoUrl}
+                          alt={photoFilename}
+                          style={{
+                            width: '100%',
+                            height: '250px',
+                            objectFit: 'cover',
+                            display: 'block'
+                          }}
+                          onError={(e) => {
+                            console.error('[Photo Error] Failed to load:', photoUrl);
+                            e.target.style.background = '#f3f4f6';
+                            e.target.alt = 'Failed to load image';
+                          }}
+                        />
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Task Detail Modal */}
         {modalTask && (
