@@ -674,8 +674,12 @@ export default function ReportViewer() {
                   gap: '16px'
                 }}>
                   {photoViewerTask.photos.map((photo, index) => {
-                    const photoUrl = photo.url || photo.thumbnails?.large?.url || photo.thumbnails?.full?.url;
-                    const photoFilename = photo.filename || `Photo ${index + 1}`;
+                    // Extract Cloudinary URL from filename if embedded (format: CLOUDINARY_URL:https://...)
+                    let photoUrl = photo.url;
+                    if (photo.filename && photo.filename.startsWith('CLOUDINARY_URL:')) {
+                      photoUrl = photo.filename.replace('CLOUDINARY_URL:', '');
+                    }
+                    const photoFilename = photo.filename?.replace('CLOUDINARY_URL:', '') || `Photo ${index + 1}`;
 
                     return (
                       <a
@@ -885,9 +889,12 @@ export default function ReportViewer() {
                       gap: '12px'
                     }}>
                       {modalTask.photos.map((photo, index) => {
-                        // Handle both Airtable attachment format and our custom format
-                        const photoUrl = photo.url || photo.thumbnails?.large?.url || photo.thumbnails?.full?.url;
-                        const photoFilename = photo.filename || `Photo ${index + 1}`;
+                        // Extract Cloudinary URL from filename if embedded (format: CLOUDINARY_URL:https://...)
+                        let photoUrl = photo.url;
+                        if (photo.filename && photo.filename.startsWith('CLOUDINARY_URL:')) {
+                          photoUrl = photo.filename.replace('CLOUDINARY_URL:', '');
+                        }
+                        const photoFilename = photo.filename?.replace('CLOUDINARY_URL:', '') || `Photo ${index + 1}`;
 
                         console.log('[Photo Debug]', index, ':', { url: photoUrl, filename: photoFilename, fullPhoto: photo });
 
