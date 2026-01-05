@@ -467,9 +467,9 @@ export default function ReportViewer() {
                       </div>
                       
                       {task.notes && (
-                        <div style={{ 
-                          background: 'white', 
-                          padding: '14px', 
+                        <div style={{
+                          background: 'white',
+                          padding: '14px',
                           borderRadius: '8px',
                           fontSize: '13px',
                           marginTop: '10px',
@@ -480,17 +480,39 @@ export default function ReportViewer() {
                         </div>
                       )}
 
-                      {serviceAction && (
-                        <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+                      <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                        {task.photos && task.photos.length > 0 && (
+                          <button
+                            onClick={() => setModalTask(task)}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              fontSize: '14px',
+                              padding: '10px 20px',
+                              background: '#10b981',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '8px',
+                              fontWeight: '700',
+                              cursor: 'pointer',
+                              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                            }}
+                          >
+                            📷 See Photo{task.photos.length > 1 ? 's' : ''} ({task.photos.length})
+                          </button>
+                        )}
+
+                        {serviceAction && (
                           <a
                             href={serviceAction.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ 
+                            style={{
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '8px',
-                              fontSize: '14px', 
+                              fontSize: '14px',
                               padding: '10px 20px',
                               textDecoration: 'none',
                               background: '#2A54A1',
@@ -505,8 +527,8 @@ export default function ReportViewer() {
                               : `Book ${serviceAction.service}`
                             }
                           </a>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -731,40 +753,53 @@ export default function ReportViewer() {
                       gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
                       gap: '12px'
                     }}>
-                      {modalTask.photos.map((photo, index) => (
-                        <a
-                          key={index}
-                          href={photo.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            display: 'block',
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                            border: '2px solid #e5e7eb',
-                            transition: 'all 0.2s'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.border = '2px solid #2A54A1';
-                            e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.border = '2px solid #e5e7eb';
-                            e.currentTarget.style.boxShadow = 'none';
-                          }}
-                        >
-                          <img
-                            src={photo.url}
-                            alt={photo.filename || `Photo ${index + 1}`}
+                      {modalTask.photos.map((photo, index) => {
+                        // Handle both Airtable attachment format and our custom format
+                        const photoUrl = photo.url || photo.thumbnails?.large?.url || photo.thumbnails?.full?.url;
+                        const photoFilename = photo.filename || `Photo ${index + 1}`;
+
+                        console.log('[Photo Debug]', index, ':', { url: photoUrl, filename: photoFilename, fullPhoto: photo });
+
+                        return (
+                          <a
+                            key={index}
+                            href={photoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             style={{
-                              width: '100%',
-                              height: '150px',
-                              objectFit: 'cover',
-                              display: 'block'
+                              display: 'block',
+                              borderRadius: '8px',
+                              overflow: 'hidden',
+                              border: '2px solid #e5e7eb',
+                              transition: 'all 0.2s'
                             }}
-                          />
-                        </a>
-                      ))}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.border = '2px solid #2A54A1';
+                              e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.border = '2px solid #e5e7eb';
+                              e.currentTarget.style.boxShadow = 'none';
+                            }}
+                          >
+                            <img
+                              src={photoUrl}
+                              alt={photoFilename}
+                              style={{
+                                width: '100%',
+                                height: '150px',
+                                objectFit: 'cover',
+                                display: 'block'
+                              }}
+                              onError={(e) => {
+                                console.error('[Photo Error] Failed to load:', photoUrl);
+                                e.target.style.background = '#f3f4f6';
+                                e.target.alt = 'Failed to load image';
+                              }}
+                            />
+                          </a>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
