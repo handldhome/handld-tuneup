@@ -481,7 +481,7 @@ export default function ReportViewer() {
                         </div>
                       )}
 
-                      <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                      <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                         {task.photos && task.photos.length > 0 && (
                           <button
                             onClick={() => setPhotoViewerTask(task)}
@@ -520,7 +520,8 @@ export default function ReportViewer() {
                               color: 'white',
                               borderRadius: '8px',
                               fontWeight: '700',
-                              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                              boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                              marginLeft: 'auto'
                             }}
                           >
                             {serviceAction.type === 'Introduction'
