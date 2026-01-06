@@ -504,9 +504,17 @@ export default function ReportViewer() {
                           </button>
                         )}
 
-                        {serviceAction && (
+                        {serviceAction && serviceAction.type === 'Handld' && (
                           <a
-                            href={serviceAction.link}
+                            href={report.quoteRequestId
+                              ? `https://handld-quote-viewer.vercel.app/q/${report.quoteRequestId}?addService=${encodeURIComponent(serviceAction.service)}`
+                              : '#'}
+                            onClick={(e) => {
+                              if (!report.quoteRequestId) {
+                                e.preventDefault();
+                                alert('Please contact us at support@handldhome.com to get pricing for this service.');
+                              }
+                            }}
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{
@@ -521,14 +529,35 @@ export default function ReportViewer() {
                               borderRadius: '8px',
                               fontWeight: '700',
                               boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                              marginLeft: 'auto'
+                              marginLeft: 'auto',
+                              opacity: report.quoteRequestId ? 1 : 0.7,
+                              cursor: report.quoteRequestId ? 'pointer' : 'not-allowed'
                             }}
                           >
-                            {serviceAction.type === 'Introduction'
-                              ? `Make ${serviceAction.service} Introduction`
-                              : `Book ${serviceAction.service}`
-                            }
+                            Book {serviceAction.service}
                           </a>
+                        )}
+                        {serviceAction && serviceAction.type === 'Referral' && (
+                          <button
+                            onClick={() => alert(`We'll connect you with a trusted ${serviceAction.service} partner. Please contact us at support@handldhome.com or call (626) 123-4567.`)}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              fontSize: '14px',
+                              padding: '10px 20px',
+                              background: '#10b981',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '8px',
+                              fontWeight: '700',
+                              boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                              marginLeft: 'auto',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Provide {serviceAction.service}
+                          </button>
                         )}
                       </div>
                     </div>
