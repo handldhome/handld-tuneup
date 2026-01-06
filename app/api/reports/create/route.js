@@ -1,7 +1,7 @@
 // app/api/reports/create/route.js
 // API endpoint to create a new home tuneup report
 
-import { createReport, createTaskResults } from '../../../../lib/airtable-tuneup';
+import { createReport, createTaskResults, linkReportToQuoteRequest } from '../../../../lib/airtable-tuneup';
 
 export async function POST(request) {
   try {
@@ -56,12 +56,24 @@ export async function POST(request) {
     const savedTasks = await createTaskResults(tasksWithReportId);
     console.log('[API] Task results created:', savedTasks.length);
 
-    // Step 3: Return success
+    // Step 3: Link report to Quote Request by email
+    console.log('[API] Linking report to Quote Request...');
+    const linkResult = await linkReportToQuoteRequest(report.id, reportData.customerEmail);
+
+    if (linkResult.linked) {
+      console.log('[API] Successfully linked to Quote Request:', linkResult.quoteRequestId);
+    } else {
+      console.log('[API] Could not link to Quote Request:', linkResult.reason);
+    }
+
+    // Step 4: Return success
     return Response.json({
       success: true,
       reportId: report.id,
       reportLink: `https://tuneup.handldhome.com/reports/${report.id}`,
       taskCount: savedTasks.length,
+      quoteRequestLinked: linkResult.linked,
+      quoteRequestId: linkResult.quoteRequestId || null,
     });
 
   } catch (error) {
