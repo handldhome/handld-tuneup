@@ -95,6 +95,8 @@ export default function ReportViewer() {
         if (!reportRes.ok) throw new Error('Report not found');
         const reportData = await reportRes.json();
         console.log('[Report Viewer] Report data received:', reportData);
+        console.log('[Report Viewer] Quote Request ID:', reportData.quoteRequestId);
+        console.log('[Report Viewer] Has Quote Request?', !!reportData.quoteRequestId);
         setReport(reportData);
 
         console.log('[Report Viewer] Fetching tasks for report:', reportId);
@@ -432,7 +434,20 @@ export default function ReportViewer() {
                 
                 {sectionTasks.map(task => {
                   const serviceAction = SERVICE_ACTIONS[task.taskName];
-                  
+
+                  // Debug logging for CTA buttons
+                  if (serviceAction) {
+                    console.log('[CTA Debug] Task:', task.taskName);
+                    console.log('[CTA Debug] Service Action:', serviceAction);
+                    console.log('[CTA Debug] Report Quote Request ID:', report.quoteRequestId);
+                    if (serviceAction.type === 'Handld') {
+                      const ctaUrl = report.quoteRequestId
+                        ? `https://handld-quote-viewer.vercel.app/q/${report.quoteRequestId}?addService=${encodeURIComponent(serviceAction.service)}`
+                        : '#';
+                      console.log('[CTA Debug] Generated URL:', ctaUrl);
+                    }
+                  }
+
                   return (
                     <div key={task.id} style={{ 
                       marginBottom: '20px', 

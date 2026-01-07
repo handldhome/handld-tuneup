@@ -15,15 +15,20 @@ export async function GET(request, { params }) {
     }
 
     console.log('[API] Fetching report:', id);
-    
+
     const report = await getReport(id);
-    
+
     if (!report) {
       return Response.json(
         { error: 'Report not found' },
         { status: 404 }
       );
     }
+
+    console.log('[API] Report fetched successfully');
+    console.log('[API] Report has Quote Request ID?', !!report.quoteRequestId);
+    console.log('[API] Quote Request ID value:', report.quoteRequestId);
+    console.log('[API] All report keys:', Object.keys(report));
 
     return Response.json(report);
 
