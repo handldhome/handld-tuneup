@@ -321,7 +321,7 @@ export default function HealthCheckReport() {
                       {services.map(service => (
                         <a
                           key={service}
-                          href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}`}
+                          href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}&name=${encodeURIComponent(report.customerName || '')}&phone=${encodeURIComponent(report.customerPhone || '')}&address=${encodeURIComponent(report.address || '')}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           style={{
@@ -611,7 +611,7 @@ export default function HealthCheckReport() {
                     {(SERVICE_MAP[modalItem.itemName] || []).map(service => (
                       <a
                         key={service}
-                        href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}`}
+                        href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}&name=${encodeURIComponent(report.customerName || '')}&phone=${encodeURIComponent(report.customerPhone || '')}&address=${encodeURIComponent(report.address || '')}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
