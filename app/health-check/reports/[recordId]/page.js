@@ -132,13 +132,13 @@ export default function HealthCheckReport() {
             textAlign: 'center',
             marginBottom: '20px',
             padding: '16px',
-            background: getRatingBgColor(report.overallRating),
+            background: '#eff6ff',
             borderRadius: '12px',
-            border: `2px solid ${getRatingColor(report.overallRating)}`
+            border: '2px solid #2A54A1'
           }}>
-            <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px', fontWeight: '600' }}>Overall Rating</div>
-            <div style={{ fontSize: '28px', fontWeight: 'bold', color: getRatingColor(report.overallRating) }}>
-              {getRatingIcon(report.overallRating)} {report.overallRating}
+            <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px', fontWeight: '600' }}>Overall Score</div>
+            <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#2A54A1' }}>
+              {report.overallRating}
             </div>
           </div>
 

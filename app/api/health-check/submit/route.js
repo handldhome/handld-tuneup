@@ -6,6 +6,7 @@ import {
   createHealthCheckItems,
   calculateOverallRating,
   getPriorityItems,
+  getServicesRecommended,
 } from '../../../../lib/healthCheck'
 
 export async function POST(request) {
@@ -28,9 +29,10 @@ export async function POST(request) {
       )
     }
 
-    // Auto-calculate overall rating and priority items
+    // Auto-calculate overall rating, priority items, and services
     const overallRating = calculateOverallRating(items)
     const priorityItems = getPriorityItems(items)
+    const servicesRecommended = getServicesRecommended(items)
 
     console.log('[HealthCheck API] Creating report...')
 
@@ -43,6 +45,7 @@ export async function POST(request) {
       notes: notes || '',
       overallRating,
       priorityItems,
+      servicesRecommended,
       customerPhone: customerPhone || '',
     })
 
