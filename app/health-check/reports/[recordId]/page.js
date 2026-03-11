@@ -46,6 +46,7 @@ export default function HealthCheckReport() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalItem, setModalItem] = useState(null);
+  const [quoteReady, setQuoteReady] = useState(false);
 
   useEffect(() => {
     async function fetchReport() {
@@ -65,6 +66,14 @@ export default function HealthCheckReport() {
 
     if (reportId) fetchReport();
   }, [reportId]);
+
+  // Reveal quote CTA after a brief spinner
+  useEffect(() => {
+    if (report?.quoteLink) {
+      const timer = setTimeout(() => setQuoteReady(true), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [report?.quoteLink]);
 
   // ── Punch List Generator (matches TuneUp) ──────────────────────────────────
   const generatePunchList = () => {
@@ -316,31 +325,9 @@ export default function HealthCheckReport() {
                       <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {item.notes}
                     </div>
                   )}
-                  {services.length > 0 && (
+                  {!report.quoteLink && services.length > 0 && (
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
-                      {report.quoteLink ? (
-                        <a
-                          href={report.quoteLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            fontSize: '13px',
-                            padding: '8px 16px',
-                            background: '#2A54A1',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '8px',
-                            fontWeight: '600',
-                            textDecoration: 'none',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                          }}
-                        >
-                          View Your Quote
-                        </a>
-                      ) : services.map(service => (
+                      {services.map(service => (
                         <a
                           key={service}
                           href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}&name=${encodeURIComponent(report.customerName || '')}&phone=${encodeURIComponent(report.customerPhone || '')}&address=${encodeURIComponent(report.address || '')}`}
@@ -420,6 +407,74 @@ export default function HealthCheckReport() {
                 )}
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Quote CTA Card — spinner then reveal */}
+        {report.quoteLink && flaggedItems.length > 0 && (
+          <div className="card" style={{
+            background: 'white',
+            boxShadow: '0 4px 12px rgba(42, 84, 161, 0.15)',
+            border: '2px solid #2A54A1',
+            padding: '32px 24px',
+            textAlign: 'center',
+            marginBottom: '24px',
+          }}>
+            {!quoteReady ? (
+              <div>
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  margin: '0 auto 16px',
+                  animation: 'spin 1.2s linear infinite',
+                }}>
+                  <img
+                    src="/Handld_Logo_Transparent.png"
+                    alt="Loading"
+                    style={{ width: '60px', height: '60px', objectFit: 'contain' }}
+                  />
+                </div>
+                <p style={{ color: '#2A54A1', fontSize: '16px', fontWeight: '600' }}>
+                  Preparing your personalized quote...
+                </p>
+                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontSize: '28px', marginBottom: '8px' }}>
+                  <img
+                    src="/Handld_Logo_Transparent.png"
+                    alt="Handld"
+                    style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+                  />
+                </div>
+                <h3 style={{ fontSize: '22px', fontWeight: 'bold', color: '#2A54A1', marginBottom: '8px' }}>
+                  Your Quote is Ready
+                </h3>
+                <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px', lineHeight: '1.5' }}>
+                  Based on your inspection, we&apos;ve prepared pricing for the recommended services.
+                </p>
+                <a
+                  href={report.quoteLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-block',
+                    padding: '14px 36px',
+                    background: '#2A54A1',
+                    color: 'white',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    borderRadius: '10px',
+                    textDecoration: 'none',
+                    boxShadow: '0 4px 8px rgba(42, 84, 161, 0.3)',
+                    transition: 'transform 0.2s',
+                  }}
+                >
+                  View My Quote
+                </a>
+              </div>
+            )}
           </div>
         )}
 
@@ -648,7 +703,7 @@ export default function HealthCheckReport() {
                           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                         }}
                       >
-                        View Your Quote
+                        View My Quote
                       </a>
                     ) : (SERVICE_MAP[modalItem.itemName] || []).map(service => (
                       <a
