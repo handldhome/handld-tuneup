@@ -5,18 +5,18 @@ import { useParams } from 'next/navigation';
 import '../../../globals.css';
 
 const SERVICE_MAP = {
-  'Driveway, Walkways & Patio Surfaces': ['Pressure Washing \u2013 Driveway & Patio'],
-  'Home Exterior & Entry': ['Pressure Washing \u2013 Home Exterior'],
+  'Driveway, Walkways & Patio Surfaces': ['Pressure Washing - Driveway & Patio'],
+  'Home Exterior & Entry': ['Pressure Washing - Home Exterior'],
   'Gutters & Downspouts': ['Gutter Cleaning'],
-  'Windows - Exterior': ['Window Washing \u2013 Exterior'],
+  'Windows - Exterior': ['Window Washing - Exterior'],
   'Outdoor Surfaces & Furniture': ['Outdoor Furniture Cleaning', 'Trash Bin Cleaning'],
-  'Exterior Fixtures & Hardware': ['Handyman Services', 'Electrical Repairs'],
-  'Kitchen Plumbing': ['Plumbing Repairs', 'Handyman Services'],
+  'Exterior Fixtures & Hardware': ['Handyman', 'Electrical Repairs'],
+  'Kitchen Plumbing': ['Plumbing Repairs', 'Handyman'],
   'Bathroom Plumbing': ['Plumbing Repairs'],
-  'Showers & Tubs': ['Handyman Services', 'Plumbing Repairs'],
-  'Electrical Panel': ['Handyman Services', 'Electrical Repairs'],
-  'Electrical Basics': ['Electrical Repairs', 'Handyman Services'],
-  'General Interior Hardware': ['Handyman Services'],
+  'Showers & Tubs': ['Handyman', 'Plumbing Repairs'],
+  'Electrical Panel': ['Handyman', 'Electrical Repairs'],
+  'Electrical Basics': ['Electrical Repairs', 'Handyman'],
+  'General Interior Hardware': ['Handyman'],
 };
 
 function getRatingColor(rating) {
@@ -318,7 +318,29 @@ export default function HealthCheckReport() {
                   )}
                   {services.length > 0 && (
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
-                      {services.map(service => (
+                      {report.quoteLink ? (
+                        <a
+                          href={report.quoteLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '13px',
+                            padding: '8px 16px',
+                            background: '#2A54A1',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontWeight: '600',
+                            textDecoration: 'none',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          }}
+                        >
+                          View Your Quote
+                        </a>
+                      ) : services.map(service => (
                         <a
                           key={service}
                           href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}&name=${encodeURIComponent(report.customerName || '')}&phone=${encodeURIComponent(report.customerPhone || '')}&address=${encodeURIComponent(report.address || '')}`}
@@ -608,7 +630,27 @@ export default function HealthCheckReport() {
 
                 {(modalItem.rating === 'Fair' || modalItem.rating === 'Needs Attention') && (SERVICE_MAP[modalItem.itemName] || []).length > 0 && (
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {(SERVICE_MAP[modalItem.itemName] || []).map(service => (
+                    {report.quoteLink ? (
+                      <a
+                        href={report.quoteLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          fontSize: '13px',
+                          padding: '8px 16px',
+                          background: '#2A54A1',
+                          color: 'white',
+                          borderRadius: '8px',
+                          fontWeight: '600',
+                          textDecoration: 'none',
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                        }}
+                      >
+                        View Your Quote
+                      </a>
+                    ) : (SERVICE_MAP[modalItem.itemName] || []).map(service => (
                       <a
                         key={service}
                         href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}&name=${encodeURIComponent(report.customerName || '')}&phone=${encodeURIComponent(report.customerPhone || '')}&address=${encodeURIComponent(report.address || '')}`}
@@ -675,7 +717,7 @@ export default function HealthCheckReport() {
               Text Us
             </a>
             <a
-              href="https://handldhome.com/quote"
+              href={report.quoteLink || 'https://handldhome.com/quote'}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -690,7 +732,7 @@ export default function HealthCheckReport() {
                 boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
               }}
             >
-              Book Services
+              {report.quoteLink ? 'View Your Quote' : 'Book Services'}
             </a>
           </div>
         </div>

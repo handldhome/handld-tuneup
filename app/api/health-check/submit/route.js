@@ -7,7 +7,10 @@ import {
   calculateOverallRating,
   getPriorityItems,
   getServicesRecommended,
+  lookupCustomerQuote,
+  createQuoteFromHealthCheck,
 } from '../../../../lib/healthCheck'
+import { getDb } from '../../../../lib/supabase'
 
 export async function POST(request) {
   try {
@@ -64,10 +67,38 @@ export async function POST(request) {
     const savedItems = await createHealthCheckItems(itemRecords)
     console.log('[HealthCheck API] Items created:', savedItems.length)
 
+    // Step 3: Auto-generate a quote if customer exists in the system
+    let quoteLink = ''
+    try {
+      const customerMatch = await lookupCustomerQuote(customerPhone, address)
+      if (customerMatch) {
+        console.log('[HealthCheck API] Found existing customer quote, generating new quote...')
+        const quoteId = await createQuoteFromHealthCheck({
+          items,
+          customerQuote: customerMatch.quote,
+          customerId: customerMatch.customerId,
+        })
+        if (quoteId) {
+          quoteLink = `https://handld-quote-viewer.vercel.app/quote/${quoteId}`
+          // Store quote link on the health check report
+          await getDb()
+            .from('health_check_reports')
+            .update({ quote_link: quoteLink })
+            .eq('id', report.id)
+          console.log('[HealthCheck API] Quote created:', quoteId)
+        }
+      } else {
+        console.log('[HealthCheck API] No existing customer found, skipping quote generation')
+      }
+    } catch (quoteErr) {
+      console.error('[HealthCheck API] Quote generation failed (non-fatal):', quoteErr.message)
+    }
+
     return Response.json({
       success: true,
       reportId: report.id,
       reportLink: `https://tuneup.handldhome.com/health-check/reports/${report.id}`,
+      quoteLink,
       overallRating,
       itemCount: savedItems.length,
     })
