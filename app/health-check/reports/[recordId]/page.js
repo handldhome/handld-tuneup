@@ -45,6 +45,7 @@ export default function HealthCheckReport() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [modalItem, setModalItem] = useState(null);
 
   useEffect(() => {
     async function fetchReport() {
@@ -64,6 +65,84 @@ export default function HealthCheckReport() {
 
     if (reportId) fetchReport();
   }, [reportId]);
+
+  // ── Punch List Generator (matches TuneUp) ──────────────────────────────────
+  const generatePunchList = () => {
+    const priorityItems = items.filter(item =>
+      item.rating === 'Fair' || item.rating === 'Needs Attention'
+    );
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Home Health Check Punch List - ${report.customerName}</title>
+  <style>
+    @media print { @page { margin: 0.5in; } }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px; margin: 0 auto; padding: 40px 20px; background: #FBF7F0;
+    }
+    .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 3px solid #2A54A1; }
+    .logo { width: 200px; margin-bottom: 20px; }
+    h1 { color: #2A54A1; font-size: 32px; margin: 0 0 10px 0; }
+    .info { color: #666; font-size: 14px; margin: 5px 0; }
+    .task {
+      background: white; padding: 20px; margin-bottom: 16px; border-radius: 8px;
+      border-left: 5px solid #f59e0b; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .task.urgent { border-left-color: #ef4444; }
+    .task-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px; }
+    .task-title { font-weight: bold; font-size: 18px; color: #1f2937; flex: 1; }
+    .task-status {
+      background: #f59e0b; color: white; padding: 4px 12px; border-radius: 12px;
+      font-size: 12px; font-weight: 600; margin-left: 12px;
+    }
+    .task-status.urgent { background: #ef4444; }
+    .task-notes {
+      color: #4b5563; font-size: 14px; line-height: 1.6; margin-top: 8px;
+      padding: 12px; background: #f9fafb; border-radius: 6px;
+    }
+    .task-services { color: #2A54A1; font-size: 13px; margin-top: 8px; font-weight: 600; }
+    .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; color: #999; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="/Handld_Logo_Transparent.png" alt="Handld" class="logo">
+    <h1>Home Health Check Punch List</h1>
+    <div class="info">${report.customerName}</div>
+    <div class="info">${report.address}</div>
+    <div class="info">Inspection Date: ${new Date(report.inspectionDate).toLocaleDateString()}</div>
+  </div>
+
+  ${priorityItems.map(item => {
+    const services = SERVICE_MAP[item.itemName] || [];
+    return `
+    <div class="task ${item.rating === 'Needs Attention' ? 'urgent' : ''}">
+      <div class="task-header">
+        <div class="task-title">#${item.itemNumber}: ${item.itemName}</div>
+        <div class="task-status ${item.rating === 'Needs Attention' ? 'urgent' : ''}">${item.rating}</div>
+      </div>
+      ${item.notes ? `<div class="task-notes"><strong>Notes:</strong> ${item.notes}</div>` : ''}
+      ${services.length > 0 ? `<div class="task-services">Recommended: ${services.join(', ')}</div>` : ''}
+    </div>
+  `;
+  }).join('')}
+
+  <div class="footer">
+    <p>&copy; ${new Date().getFullYear()} Handld Home Services</p>
+  </div>
+</body>
+</html>
+    `;
+
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = window.URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => window.URL.revokeObjectURL(url), 100);
+  };
 
   if (loading) {
     return (
@@ -127,7 +206,7 @@ export default function HealthCheckReport() {
             Inspection Summary
           </h2>
 
-          {/* Overall Rating */}
+          {/* Overall Score */}
           <div style={{
             textAlign: 'center',
             marginBottom: '20px',
@@ -171,51 +250,103 @@ export default function HealthCheckReport() {
           </div>
         )}
 
-        {/* Items Needing Attention (red) */}
+        {/* Items Needing Attention (red) — with CTA buttons */}
+        {needsAttentionItems.length > 0 && (
+          <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+            <h2 style={{ fontSize: '26px', fontWeight: 'bold', color: '#ef4444' }}>
+              {'\ud83d\udd34'} Needs Attention
+            </h2>
+            <button
+              onClick={generatePunchList}
+              style={{
+                background: '#2A54A1',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '8px',
+                border: 'none',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}
+            >
+              Download Punch List
+            </button>
+          </div>
+        )}
         {needsAttentionItems.length > 0 && (
           <div className="card" style={{ marginBottom: '20px', background: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '20px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '16px', color: '#ef4444' }}>
-              {'\ud83d\udd34'} Needs Attention ({needsAttentionItems.length})
-            </h2>
-            {needsAttentionItems.map(item => (
-              <div key={item.id} style={{
-                marginBottom: '12px',
-                padding: '16px',
-                background: '#fee2e2',
-                borderRadius: '10px',
-                borderLeft: '5px solid #ef4444'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '6px', flexWrap: 'wrap', gap: '8px' }}>
-                  <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#1f2937' }}>
-                    {item.itemName}
+            {needsAttentionItems.map(item => {
+              const services = SERVICE_MAP[item.itemName] || [];
+              return (
+                <div key={item.id} style={{
+                  marginBottom: '16px',
+                  padding: '16px',
+                  background: '#fee2e2',
+                  borderRadius: '10px',
+                  borderLeft: '5px solid #ef4444'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '6px', flexWrap: 'wrap', gap: '8px' }}>
+                    <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#1f2937' }}>
+                      {item.itemName}
+                    </div>
+                    <span style={{
+                      padding: '4px 12px',
+                      borderRadius: '16px',
+                      fontSize: '12px',
+                      fontWeight: '700',
+                      background: '#ef4444',
+                      color: 'white'
+                    }}>
+                      Needs Attention
+                    </span>
                   </div>
-                  <span style={{
-                    padding: '4px 12px',
-                    borderRadius: '16px',
-                    fontSize: '12px',
-                    fontWeight: '700',
-                    background: '#ef4444',
-                    color: 'white'
-                  }}>
-                    Needs Attention
-                  </span>
-                </div>
-                <div style={{ fontSize: '13px', color: '#666', marginBottom: item.notes ? '8px' : '0' }}>
-                  {item.section}
-                </div>
-                {item.notes && (
-                  <div style={{
-                    background: 'white',
-                    padding: '12px',
-                    borderRadius: '8px',
-                    fontSize: '13px',
-                    border: '1px solid #d1d5db'
-                  }}>
-                    <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {item.notes}
+                  <div style={{ fontSize: '13px', color: '#666', marginBottom: item.notes ? '8px' : '0' }}>
+                    {item.section}
                   </div>
-                )}
-              </div>
-            ))}
+                  {item.notes && (
+                    <div style={{
+                      background: 'white',
+                      padding: '12px',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      border: '1px solid #d1d5db',
+                      marginBottom: '12px'
+                    }}>
+                      <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {item.notes}
+                    </div>
+                  )}
+                  {services.length > 0 && (
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
+                      {services.map(service => (
+                        <a
+                          key={service}
+                          href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '13px',
+                            padding: '8px 16px',
+                            background: '#2A54A1',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontWeight: '600',
+                            textDecoration: 'none',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          }}
+                        >
+                          Book {service}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -270,7 +401,7 @@ export default function HealthCheckReport() {
           </div>
         )}
 
-        {/* Complete Checklist Grid */}
+        {/* Complete Checklist Grid — numbered, clickable */}
         <div className="card" style={{ marginTop: '24px', background: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '20px' }}>
           <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '16px', color: '#2A54A1', textAlign: 'center' }}>
             Complete 12-Point Inspection
@@ -282,15 +413,21 @@ export default function HealthCheckReport() {
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px', marginBottom: '20px' }}>
             {exteriorItems.map(item => (
-              <div key={item.id} style={{
-                padding: '10px',
-                background: getRatingBgColor(item.rating),
-                borderRadius: '8px',
-                borderLeft: `4px solid ${getRatingColor(item.rating)}`,
-                fontSize: '12px'
-              }}>
+              <div
+                key={item.id}
+                onClick={() => setModalItem(item)}
+                style={{
+                  padding: '10px',
+                  background: getRatingBgColor(item.rating),
+                  borderRadius: '8px',
+                  borderLeft: `4px solid ${getRatingColor(item.rating)}`,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
                 <div style={{ fontWeight: '600', marginBottom: '4px', color: '#1f2937', fontSize: '13px' }}>
-                  {item.itemName}
+                  {item.itemNumber}. {item.itemName}
                 </div>
                 <span style={{
                   display: 'inline-block',
@@ -313,15 +450,21 @@ export default function HealthCheckReport() {
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px' }}>
             {interiorItems.map(item => (
-              <div key={item.id} style={{
-                padding: '10px',
-                background: getRatingBgColor(item.rating),
-                borderRadius: '8px',
-                borderLeft: `4px solid ${getRatingColor(item.rating)}`,
-                fontSize: '12px'
-              }}>
+              <div
+                key={item.id}
+                onClick={() => setModalItem(item)}
+                style={{
+                  padding: '10px',
+                  background: getRatingBgColor(item.rating),
+                  borderRadius: '8px',
+                  borderLeft: `4px solid ${getRatingColor(item.rating)}`,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
                 <div style={{ fontWeight: '600', marginBottom: '4px', color: '#1f2937', fontSize: '13px' }}>
-                  {item.itemName}
+                  {item.itemNumber}. {item.itemName}
                 </div>
                 <span style={{
                   display: 'inline-block',
@@ -339,48 +482,157 @@ export default function HealthCheckReport() {
           </div>
         </div>
 
-        {/* Handld Can Help With (only if flagged items exist) */}
-        {flaggedItems.length > 0 && (
-          <div className="card" style={{ marginTop: '24px', background: 'white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '20px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '16px', color: '#2A54A1', textAlign: 'center' }}>
-              Handld Can Help With
-            </h2>
+        {/* Item Detail Modal */}
+        {modalItem && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.6)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+              padding: '20px'
+            }}
+            onClick={() => setModalItem(null)}
+          >
+            <div
+              style={{
+                background: 'white',
+                borderRadius: '12px',
+                maxWidth: '600px',
+                width: '100%',
+                maxHeight: '80vh',
+                overflow: 'auto',
+                position: 'relative',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setModalItem(null)}
+                style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  background: '#f3f4f6',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  cursor: 'pointer',
+                  fontSize: '20px',
+                  color: '#6b7280',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s'
+                }}
+              >
+                &times;
+              </button>
 
-            {flaggedItems.map(item => {
-              const services = SERVICE_MAP[item.itemName] || [];
-              if (services.length === 0) return null;
-
-              return (
-                <div key={item.id} style={{
-                  marginBottom: '12px',
-                  padding: '14px',
-                  background: '#f9fafb',
-                  borderRadius: '8px',
-                  borderLeft: `4px solid ${getRatingColor(item.rating)}`
+              <div style={{ padding: '32px' }}>
+                <div style={{
+                  display: 'inline-block',
+                  padding: '4px 12px',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  background: getRatingColor(modalItem.rating),
+                  color: 'white',
+                  marginBottom: '12px'
                 }}>
-                  <div style={{ fontWeight: '600', fontSize: '15px', color: '#1f2937', marginBottom: '6px' }}>
-                    {getRatingIcon(item.rating)} {item.itemName}
-                  </div>
-                  <div style={{ fontSize: '14px', color: '#4b5563' }}>
-                    {services.join(' \u00b7 ')}
-                  </div>
+                  {getRatingIcon(modalItem.rating)} {modalItem.rating}
                 </div>
-              );
-            })}
 
-            <div style={{
-              marginTop: '20px',
-              padding: '16px',
-              background: '#eff6ff',
-              borderRadius: '8px',
-              textAlign: 'center',
-              fontSize: '15px',
-              color: '#1e40af',
-              lineHeight: '1.6'
-            }}>
-              Ready to get these taken care of? Reply to your text or visit{' '}
-              <a href="https://handldhome.com" style={{ color: '#2A54A1', fontWeight: '600' }}>handldhome.com</a>
-              {' '}to book.
+                <h3 style={{
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  color: '#1f2937',
+                  marginBottom: '8px'
+                }}>
+                  #{modalItem.itemNumber}: {modalItem.itemName}
+                </h3>
+
+                <p style={{
+                  fontSize: '14px',
+                  color: '#6b7280',
+                  marginBottom: '20px',
+                  fontWeight: '500'
+                }}>
+                  {modalItem.section}
+                </p>
+
+                {modalItem.notes ? (
+                  <div style={{
+                    background: '#eff6ff',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    borderLeft: '4px solid #2A54A1',
+                    marginBottom: '16px'
+                  }}>
+                    <h4 style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#2A54A1',
+                      marginBottom: '8px'
+                    }}>
+                      Technician Notes
+                    </h4>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#1e40af',
+                      lineHeight: '1.6'
+                    }}>
+                      {modalItem.notes}
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{
+                    background: '#f9fafb',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    marginBottom: '16px'
+                  }}>
+                    <p style={{ fontSize: '14px', color: '#9ca3af', fontStyle: 'italic' }}>
+                      No additional notes from technician.
+                    </p>
+                  </div>
+                )}
+
+                {(modalItem.rating === 'Fair' || modalItem.rating === 'Needs Attention') && (SERVICE_MAP[modalItem.itemName] || []).length > 0 && (
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {(SERVICE_MAP[modalItem.itemName] || []).map(service => (
+                      <a
+                        key={service}
+                        href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          fontSize: '13px',
+                          padding: '8px 16px',
+                          background: '#2A54A1',
+                          color: 'white',
+                          borderRadius: '8px',
+                          fontWeight: '600',
+                          textDecoration: 'none',
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                        }}
+                      >
+                        Book {service}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -407,7 +659,7 @@ export default function HealthCheckReport() {
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a
-              href="mailto:support@handldhome.com"
+              href="sms:6262987128"
               style={{
                 background: 'white',
                 color: '#2A54A1',
@@ -420,10 +672,12 @@ export default function HealthCheckReport() {
                 boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
               }}
             >
-              Contact Us
+              Text Us
             </a>
             <a
-              href="https://handldhome.com"
+              href="https://handldhome.com/quote"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 background: '#10b981',
                 color: 'white',
