@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import './globals.css';
 
 const TASKS = [
@@ -62,7 +63,15 @@ const TECHNICIAN_OPTIONS = [
 
 const STORAGE_KEY = 'handld-tuneup-progress';
 
-export default function TechnicianForm() {
+export default function TechnicianFormWrapper() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui' }}>Loading...</div>}>
+      <TechnicianForm />
+    </Suspense>
+  );
+}
+
+function TechnicianForm() {
   const [currentStep, setCurrentStep] = useState('customer-info');
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
@@ -88,10 +97,39 @@ export default function TechnicianForm() {
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
 
-  // Store master tasks from Airtable with default action types
+  // Store master tasks with default action types
   const [masterTasks, setMasterTasks] = useState({});
+  const [jobPrefilled, setJobPrefilled] = useState(false);
 
-  // Fetch master tasks from Airtable on mount
+  // Pre-populate from jobId URL param (linked from scheduling tool)
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const jobId = searchParams.get('jobId');
+    if (!jobId || jobPrefilled) return;
+
+    const fetchJob = async () => {
+      try {
+        const response = await fetch(`/api/job/${jobId}`);
+        if (!response.ok) return;
+        const job = await response.json();
+
+        setCustomerInfo(prev => ({
+          customerName: job.customerName || prev.customerName,
+          customerEmail: job.customerEmail || prev.customerEmail,
+          address: job.address || prev.address,
+          city: job.city || prev.city || 'Pasadena',
+          technicianName: job.technicianName || prev.technicianName,
+        }));
+        setJobPrefilled(true);
+        console.log('[Form] Pre-populated from job:', jobId);
+      } catch (err) {
+        console.error('[Form] Failed to fetch job for pre-fill:', err);
+      }
+    };
+    fetchJob();
+  }, [searchParams, jobPrefilled]);
+
+  // Fetch master tasks on mount
   useEffect(() => {
     const fetchMasterTasks = async () => {
       try {

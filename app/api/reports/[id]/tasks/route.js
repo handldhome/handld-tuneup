@@ -1,7 +1,7 @@
 // app/api/reports/[id]/tasks/route.js
 // API endpoint to fetch task results for a report
 
-import { getTaskResults } from '../../../../../lib/airtable-tuneup';
+import { getTaskResults } from '../../../../../lib/db';
 
 export async function GET(request, { params }) {
   try {

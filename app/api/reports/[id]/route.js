@@ -1,7 +1,7 @@
 // app/api/reports/[id]/route.js
 // API endpoint to fetch a single report by ID
 
-import { getReport } from '../../../../lib/airtable-tuneup';
+import { getReport } from '../../../../lib/db';
 
 export async function GET(request, { params }) {
   try {

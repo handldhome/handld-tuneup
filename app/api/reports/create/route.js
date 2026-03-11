@@ -1,7 +1,7 @@
 // app/api/reports/create/route.js
 // API endpoint to create a new home tuneup report
 
-import { createReport, createTaskResults, linkReportToQuoteRequest } from '../../../../lib/airtable-tuneup';
+import { createReport, createTaskResults, linkReportToQuoteRequest } from '../../../../lib/db';
 
 export async function POST(request) {
   try {

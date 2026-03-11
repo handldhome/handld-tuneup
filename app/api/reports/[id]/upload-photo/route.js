@@ -1,7 +1,7 @@
 // app/api/reports/[id]/upload-photo/route.js
 // API endpoint to upload a single photo to a task result
 
-import { uploadPhotoToTask } from '../../../../../lib/airtable-tuneup';
+import { uploadPhotoToTask } from '../../../../../lib/db';
 import { uploadBase64Image } from '../../../../../lib/cloudinary';
 
 export async function POST(request, { params }) {

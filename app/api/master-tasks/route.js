@@ -1,7 +1,7 @@
 // app/api/master-tasks/route.js
 // API endpoint to fetch master task list from Airtable
 
-import { getMasterTasks } from '../../../lib/airtable-tuneup';
+import { getMasterTasks } from '../../../lib/db';
 
 export async function GET() {
   try {
