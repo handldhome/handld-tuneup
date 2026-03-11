@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import '../../globals.css';
 
 const CHECKLIST_ITEMS = [
@@ -29,7 +30,15 @@ const TECHNICIAN_OPTIONS = [
 
 const STORAGE_KEY = 'handld-health-check-progress';
 
-export default function HealthCheckForm() {
+export default function HealthCheckFormWrapper() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui' }}>Loading...</div>}>
+      <HealthCheckForm />
+    </Suspense>
+  );
+}
+
+function HealthCheckForm() {
   const [currentStep, setCurrentStep] = useState('customer-info');
 
   const [customerInfo, setCustomerInfo] = useState({
@@ -38,6 +47,28 @@ export default function HealthCheckForm() {
     technicianName: '',
     customerPhone: '',
   });
+
+  // Pre-populate from URL params (linked from scheduling tool / work.handldhome.com)
+  const searchParams = useSearchParams();
+  const [prefilled, setPrefilled] = useState(false);
+
+  useEffect(() => {
+    if (prefilled) return;
+    const name = searchParams.get('customerName');
+    const address = searchParams.get('address');
+    const phone = searchParams.get('customerPhone');
+    const tech = searchParams.get('techName');
+
+    if (name || address || phone || tech) {
+      setCustomerInfo(prev => ({
+        customerName: name || prev.customerName,
+        address: address || prev.address,
+        customerPhone: phone || prev.customerPhone,
+        technicianName: tech || prev.technicianName,
+      }));
+      setPrefilled(true);
+    }
+  }, [searchParams, prefilled]);
 
   const [ratings, setRatings] = useState({});
   const [notes, setNotes] = useState({});
@@ -357,7 +388,7 @@ function ChecklistItemCard({ item, rating, note, onRate, onNote }) {
   return (
     <div className="card" style={{ marginBottom: '12px' }}>
       <div style={{ fontWeight: '600', fontSize: '15px', marginBottom: '4px', color: '#1f2937' }}>
-        {item.name}
+        {item.number}. {item.name}
       </div>
       <div style={{ fontSize: '13px', color: '#666', marginBottom: '12px' }}>
         {item.description}
@@ -394,7 +425,7 @@ function ChecklistItemCard({ item, rating, note, onRate, onNote }) {
         <input
           type="text"
           className="input"
-          placeholder="Notes (optional) \u2014 what did you observe?"
+          placeholder="Notes (optional)"
           value={note || ''}
           onChange={(e) => onNote(e.target.value)}
           style={{ marginBottom: '0' }}
