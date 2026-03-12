@@ -31,6 +31,19 @@ function getRatingBgColor(rating) {
   return '#d1fae5';
 }
 
+function getScoreTitle(overallRating) {
+  // Parse score from "9.5 / 12" format
+  const score = parseFloat(overallRating);
+  if (score >= 12) return { title: 'Immaculate Condition', subtitle: 'Your home is in perfect shape — keep up the great work!' };
+  if (score >= 11) return { title: 'Exceptional Shape', subtitle: 'Just a small touch-up away from perfection.' };
+  if (score >= 10) return { title: 'Looking Great', subtitle: 'Your home is well-maintained with just a couple areas to address.' };
+  if (score >= 9) return { title: 'Beautiful Home, Just Needs a Little Spruce', subtitle: 'A few quick fixes and your home will be shining.' };
+  if (score >= 8) return { title: 'Solid Foundation', subtitle: 'Your home has great bones — let us help with the finishing touches.' };
+  if (score >= 7) return { title: 'Good Bones, Room to Shine', subtitle: 'A little TLC will go a long way for your home.' };
+  if (score >= 6) return { title: 'Ready for a Refresh', subtitle: 'We can help bring your home back to its best.' };
+  return { title: 'Time for Some Love', subtitle: "Every home needs a little attention — let's get yours back on track." };
+}
+
 function getRatingIcon(rating) {
   if (rating === 'Fair') return '\u26a0\ufe0f';
   if (rating === 'Needs Attention') return '\ud83d\udd34';
@@ -216,19 +229,29 @@ export default function HealthCheckReport() {
           </h2>
 
           {/* Overall Score */}
-          <div style={{
-            textAlign: 'center',
-            marginBottom: '20px',
-            padding: '16px',
-            background: '#eff6ff',
-            borderRadius: '12px',
-            border: '2px solid #2A54A1'
-          }}>
-            <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px', fontWeight: '600' }}>Overall Score</div>
-            <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#2A54A1' }}>
-              {report.overallRating}
-            </div>
-          </div>
+          {(() => {
+            const { title, subtitle } = getScoreTitle(report.overallRating);
+            return (
+              <div style={{
+                textAlign: 'center',
+                marginBottom: '20px',
+                padding: '20px 16px',
+                background: '#eff6ff',
+                borderRadius: '12px',
+                border: '2px solid #2A54A1'
+              }}>
+                <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#2A54A1', marginBottom: '4px' }}>
+                  {report.overallRating}
+                </div>
+                <div style={{ fontSize: '18px', fontWeight: '700', color: '#2A54A1', marginBottom: '6px' }}>
+                  {title}
+                </div>
+                <div style={{ fontSize: '14px', color: '#666', lineHeight: '1.4' }}>
+                  {subtitle}
+                </div>
+              </div>
+            );
+          })()}
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
             <div style={{ textAlign: 'center', padding: '16px', background: '#d1fae5', borderRadius: '12px' }}>
