@@ -11,6 +11,7 @@ import {
   createQuoteFromHealthCheck,
 } from '../../../../lib/healthCheck'
 import { getDb } from '../../../../lib/supabase'
+import { cleanUpNotes } from '../../../../lib/cleanNotes'
 
 export async function POST(request) {
   try {
@@ -32,10 +33,14 @@ export async function POST(request) {
       )
     }
 
+    // Clean up technician notes with Claude before saving
+    const cleanedItems = await cleanUpNotes(items)
+    console.log('[HealthCheck API] Notes cleaned up')
+
     // Auto-calculate overall rating, priority items, and services
-    const overallRating = calculateOverallRating(items)
-    const priorityItems = getPriorityItems(items)
-    const servicesRecommended = getServicesRecommended(items)
+    const overallRating = calculateOverallRating(cleanedItems)
+    const priorityItems = getPriorityItems(cleanedItems)
+    const servicesRecommended = getServicesRecommended(cleanedItems)
 
     console.log('[HealthCheck API] Creating report...')
 
@@ -54,8 +59,8 @@ export async function POST(request) {
 
     console.log('[HealthCheck API] Report created:', report.id)
 
-    // Step 2: Create checklist items linked to this report
-    const itemRecords = items.map(item => ({
+    // Step 2: Create checklist items linked to this report (with cleaned notes)
+    const itemRecords = cleanedItems.map(item => ({
       reportId: report.id,
       itemNumber: item.number,
       section: item.section,
@@ -74,7 +79,7 @@ export async function POST(request) {
       if (customerMatch) {
         console.log('[HealthCheck API] Found existing customer quote, generating new quote...')
         const quoteId = await createQuoteFromHealthCheck({
-          items,
+          items: cleanedItems,
           customerQuote: customerMatch.quote,
           customerId: customerMatch.customerId,
         })
