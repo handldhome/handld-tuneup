@@ -19,6 +19,21 @@ const SERVICE_MAP = {
   'General Interior Hardware': ['Handyman'],
 };
 
+const ITEM_DESCRIPTIONS = {
+  'Driveway, Walkways & Patio Surfaces': 'Staining, oil, moss, algae, cracks, or surface deterioration',
+  'Home Exterior & Entry': 'Walls, siding, steps — dirt buildup, mildew, oxidation, peeling paint',
+  'Gutters & Downspouts': 'Debris, sagging, overflow staining, discharge point clear of pooling',
+  'Windows - Exterior': 'Glass cleanliness, screen condition, latch and hardware function',
+  'Outdoor Surfaces & Furniture': 'Bins, furniture, fabric or hard surfaces showing grime or mildew',
+  'Exterior Fixtures & Hardware': 'Lighting, door hardware, fence/gate latches — anything loose or broken',
+  'Kitchen Plumbing': 'Sink drainage, faucet drips, leaks under cabinet, disposal condition',
+  'Bathroom Plumbing': 'Sink drains, toilet running/rocking/staining, hose connections',
+  'Showers & Tubs': 'Caulk gaps, mold, grout condition, drain speed',
+  'Electrical Panel': 'Labeled clearly, accessible, no tripped breakers, corrosion, or overcrowding',
+  'Electrical Basics': 'GFCI outlets present and functional, smoke/CO detectors present and working',
+  'General Interior Hardware': 'Cabinet hardware, door hinges, sticking doors, anything loose or broken',
+};
+
 function getRatingColor(rating) {
   if (rating === 'Fair') return '#f59e0b';
   if (rating === 'Needs Attention') return '#ef4444';
@@ -333,8 +348,8 @@ export default function HealthCheckReport() {
                       Needs Attention
                     </span>
                   </div>
-                  <div style={{ fontSize: '13px', color: '#666', marginBottom: item.notes ? '8px' : '0' }}>
-                    {item.section}
+                  <div style={{ fontSize: '13px', color: '#888', fontStyle: 'italic', marginBottom: item.notes ? '8px' : '0' }}>
+                    {ITEM_DESCRIPTIONS[item.itemName] || item.section}
                   </div>
                   {item.notes && (
                     <div style={{
@@ -414,8 +429,8 @@ export default function HealthCheckReport() {
                     Fair
                   </span>
                 </div>
-                <div style={{ fontSize: '13px', color: '#666', marginBottom: item.notes ? '8px' : '0' }}>
-                  {item.section}
+                <div style={{ fontSize: '13px', color: '#888', fontStyle: 'italic', marginBottom: item.notes ? '8px' : '0' }}>
+                  {ITEM_DESCRIPTIONS[item.itemName] || item.section}
                 </div>
                 {item.notes && (
                   <div style={{
@@ -526,8 +541,11 @@ export default function HealthCheckReport() {
                   transition: 'all 0.2s'
                 }}
               >
-                <div style={{ fontWeight: '600', marginBottom: '4px', color: '#1f2937', fontSize: '13px' }}>
+                <div style={{ fontWeight: '600', marginBottom: '2px', color: '#1f2937', fontSize: '13px' }}>
                   {item.itemNumber}. {item.itemName}
+                </div>
+                <div style={{ fontSize: '11px', color: '#888', fontStyle: 'italic', marginBottom: '6px', lineHeight: '1.3' }}>
+                  {ITEM_DESCRIPTIONS[item.itemName]}
                 </div>
                 <span style={{
                   display: 'inline-block',
@@ -563,8 +581,11 @@ export default function HealthCheckReport() {
                   transition: 'all 0.2s'
                 }}
               >
-                <div style={{ fontWeight: '600', marginBottom: '4px', color: '#1f2937', fontSize: '13px' }}>
+                <div style={{ fontWeight: '600', marginBottom: '2px', color: '#1f2937', fontSize: '13px' }}>
                   {item.itemNumber}. {item.itemName}
+                </div>
+                <div style={{ fontSize: '11px', color: '#888', fontStyle: 'italic', marginBottom: '6px', lineHeight: '1.3' }}>
+                  {ITEM_DESCRIPTIONS[item.itemName]}
                 </div>
                 <span style={{
                   display: 'inline-block',
@@ -663,10 +684,19 @@ export default function HealthCheckReport() {
                 <p style={{
                   fontSize: '14px',
                   color: '#6b7280',
-                  marginBottom: '20px',
+                  marginBottom: '6px',
                   fontWeight: '500'
                 }}>
                   {modalItem.section}
+                </p>
+                <p style={{
+                  fontSize: '13px',
+                  color: '#9ca3af',
+                  fontStyle: 'italic',
+                  marginBottom: '20px',
+                  lineHeight: '1.4'
+                }}>
+                  {ITEM_DESCRIPTIONS[modalItem.itemName]}
                 </p>
 
                 {modalItem.notes ? (
