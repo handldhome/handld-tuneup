@@ -109,67 +109,116 @@ export default function HealthCheckReport() {
       item.rating === 'Fair' || item.rating === 'Needs Attention'
     );
 
+    // Collect all unique services for the CTA section
+    const allServices = [];
+    priorityItems.forEach(item => {
+      const mapped = SERVICE_MAP[item.itemName] || [];
+      mapped.forEach(s => { if (!allServices.includes(s)) allServices.push(s); });
+    });
+
     const htmlContent = `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Home Health Check Punch List - ${report.customerName}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Handyman To Do List - ${report.customerName}</title>
   <style>
-    @media print { @page { margin: 0.5in; } }
+    @media print { @page { margin: 0.5in; } .cta-section { display: none !important; } }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      max-width: 800px; margin: 0 auto; padding: 40px 20px; background: #FBF7F0;
+      max-width: 700px; margin: 0 auto; padding: 40px 20px; background: #FBF7F0; color: #1f2937;
     }
-    .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 3px solid #2A54A1; }
-    .logo { width: 200px; margin-bottom: 20px; }
-    h1 { color: #2A54A1; font-size: 32px; margin: 0 0 10px 0; }
-    .info { color: #666; font-size: 14px; margin: 5px 0; }
-    .task {
-      background: white; padding: 20px; margin-bottom: 16px; border-radius: 8px;
-      border-left: 5px solid #f59e0b; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    .header { text-align: center; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 3px solid #2A54A1; }
+    .logo { width: 180px; margin-bottom: 16px; }
+    h1 { color: #2A54A1; font-size: 26px; margin: 0 0 8px 0; }
+    .subtitle { color: #888; font-size: 14px; margin: 0; }
+    .info { color: #666; font-size: 13px; margin: 4px 0; }
+    .section-label { font-size: 13px; font-weight: 700; color: #2A54A1; text-transform: uppercase; letter-spacing: 0.5px; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #2A54A1; }
+    .todo-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 16px; margin-bottom: 8px; background: white;
+      border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
-    .task.urgent { border-left-color: #ef4444; }
-    .task-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px; }
-    .task-title { font-weight: bold; font-size: 18px; color: #1f2937; flex: 1; }
-    .task-status {
-      background: #f59e0b; color: white; padding: 4px 12px; border-radius: 12px;
-      font-size: 12px; font-weight: 600; margin-left: 12px;
+    .checkbox {
+      width: 22px; height: 22px; min-width: 22px; border: 2px solid #d1d5db;
+      border-radius: 4px; margin-top: 2px;
     }
-    .task-status.urgent { background: #ef4444; }
-    .task-notes {
-      color: #4b5563; font-size: 14px; line-height: 1.6; margin-top: 8px;
-      padding: 12px; background: #f9fafb; border-radius: 6px;
+    .todo-item.urgent .checkbox { border-color: #ef4444; }
+    .todo-item.monitor .checkbox { border-color: #f59e0b; }
+    .todo-content { flex: 1; }
+    .todo-title { font-weight: 600; font-size: 15px; margin-bottom: 2px; }
+    .todo-desc { font-size: 12px; color: #888; font-style: italic; }
+    .todo-notes { font-size: 13px; color: #4b5563; margin-top: 6px; padding: 8px 10px; background: #f3f4f6; border-radius: 6px; line-height: 1.5; }
+    .todo-badge {
+      font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 10px;
+      color: white; white-space: nowrap; margin-top: 2px;
     }
-    .task-services { color: #2A54A1; font-size: 13px; margin-top: 8px; font-weight: 600; }
-    .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; color: #999; font-size: 12px; }
+    .todo-badge.urgent { background: #ef4444; }
+    .todo-badge.monitor { background: #f59e0b; }
+    .cta-section {
+      text-align: center; margin-top: 36px; padding: 28px 20px;
+      background: white; border-radius: 12px; border: 2px solid #2A54A1;
+      box-shadow: 0 2px 8px rgba(42,84,161,0.1);
+    }
+    .cta-section h3 { color: #2A54A1; font-size: 18px; margin: 0 0 8px; }
+    .cta-section p { color: #666; font-size: 13px; margin: 0 0 16px; }
+    .cta-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .cta-btn {
+      display: inline-block; padding: 10px 20px; background: #2A54A1; color: white;
+      text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 13px;
+    }
+    .footer { text-align: center; margin-top: 32px; padding-top: 16px; border-top: 2px solid #e5e7eb; color: #999; font-size: 12px; }
   </style>
 </head>
 <body>
   <div class="header">
     <img src="/Handld_Logo_Transparent.png" alt="Handld" class="logo">
-    <h1>Home Health Check Punch List</h1>
-    <div class="info">${report.customerName}</div>
-    <div class="info">${report.address}</div>
-    <div class="info">Inspection Date: ${new Date(report.inspectionDate).toLocaleDateString()}</div>
+    <h1>Handyman To Do List</h1>
+    <p class="subtitle">Based on your Home Health Check inspection</p>
+    <div class="info" style="margin-top: 12px;">${report.customerName} &mdash; ${report.address}</div>
+    <div class="info">Inspected: ${new Date(report.inspectionDate).toLocaleDateString()}</div>
   </div>
 
-  ${priorityItems.map(item => {
-    const services = SERVICE_MAP[item.itemName] || [];
-    return `
-    <div class="task ${item.rating === 'Needs Attention' ? 'urgent' : ''}">
-      <div class="task-header">
-        <div class="task-title">#${item.itemNumber}: ${item.itemName}</div>
-        <div class="task-status ${item.rating === 'Needs Attention' ? 'urgent' : ''}">${item.rating}</div>
+  ${priorityItems.filter(i => i.rating === 'Needs Attention').length > 0 ? `
+  <div class="section-label">Needs Attention</div>
+  ${priorityItems.filter(i => i.rating === 'Needs Attention').map(item => `
+    <div class="todo-item urgent">
+      <div class="checkbox"></div>
+      <div class="todo-content">
+        <div class="todo-title">${item.itemName}</div>
+        <div class="todo-desc">${ITEM_DESCRIPTIONS[item.itemName] || ''}</div>
+        ${item.notes ? `<div class="todo-notes">${item.notes}</div>` : ''}
       </div>
-      ${item.notes ? `<div class="task-notes"><strong>Notes:</strong> ${item.notes}</div>` : ''}
-      ${services.length > 0 ? `<div class="task-services">Recommended: ${services.join(', ')}</div>` : ''}
+      <div class="todo-badge urgent">Needs Attention</div>
     </div>
-  `;
-  }).join('')}
+  `).join('')}` : ''}
+
+  ${priorityItems.filter(i => i.rating === 'Fair').length > 0 ? `
+  <div class="section-label">Items to Monitor</div>
+  ${priorityItems.filter(i => i.rating === 'Fair').map(item => `
+    <div class="todo-item monitor">
+      <div class="checkbox"></div>
+      <div class="todo-content">
+        <div class="todo-title">${item.itemName}</div>
+        <div class="todo-desc">${ITEM_DESCRIPTIONS[item.itemName] || ''}</div>
+        ${item.notes ? `<div class="todo-notes">${item.notes}</div>` : ''}
+      </div>
+      <div class="todo-badge monitor">Fair</div>
+    </div>
+  `).join('')}` : ''}
+
+  ${allServices.length > 0 ? `
+  <div class="cta-section">
+    <h3>Let Handld Take Care of It</h3>
+    <p>Book any of these services and we'll handle the rest.</p>
+    <div class="cta-buttons">
+      ${allServices.map(s => `<a class="cta-btn" href="https://handldhome.com/quote?service=${encodeURIComponent(s)}&name=${encodeURIComponent(report.customerName || '')}&phone=${encodeURIComponent(report.customerPhone || '')}&address=${encodeURIComponent(report.address || '')}" target="_blank">Book ${s}</a>`).join('')}
+    </div>
+  </div>` : ''}
 
   <div class="footer">
-    <p>&copy; ${new Date().getFullYear()} Handld Home Services</p>
+    <p>&copy; ${new Date().getFullYear()} Handld Home Services &mdash; Keeping Your Home Safe &amp; Sound</p>
   </div>
 </body>
 </html>
@@ -317,7 +366,7 @@ export default function HealthCheckReport() {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }}
             >
-              Download Punch List
+              View Handyman To Do List
             </button>
           </div>
         )}
@@ -363,7 +412,7 @@ export default function HealthCheckReport() {
                       <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {item.notes}
                     </div>
                   )}
-                  {!report.quoteLink && services.length > 0 && (
+                  {services.length > 0 && (
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
                       {services.map(service => (
                         <a
@@ -406,45 +455,77 @@ export default function HealthCheckReport() {
             <p style={{ fontSize: '14px', color: '#888', marginBottom: '16px' }}>
               These items are in acceptable condition but worth keeping an eye on.
             </p>
-            {fairItems.map(item => (
-              <div key={item.id} style={{
-                marginBottom: '12px',
-                padding: '16px',
-                background: '#fef3c7',
-                borderRadius: '10px',
-                borderLeft: '5px solid #f59e0b'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '6px', flexWrap: 'wrap', gap: '8px' }}>
-                  <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#1f2937' }}>
-                    {item.itemName}
+            {fairItems.map(item => {
+              const services = SERVICE_MAP[item.itemName] || [];
+              return (
+                <div key={item.id} style={{
+                  marginBottom: '12px',
+                  padding: '16px',
+                  background: '#fef3c7',
+                  borderRadius: '10px',
+                  borderLeft: '5px solid #f59e0b'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '6px', flexWrap: 'wrap', gap: '8px' }}>
+                    <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#1f2937' }}>
+                      {item.itemName}
+                    </div>
+                    <span style={{
+                      padding: '4px 12px',
+                      borderRadius: '16px',
+                      fontSize: '12px',
+                      fontWeight: '700',
+                      background: '#f59e0b',
+                      color: 'white'
+                    }}>
+                      Fair
+                    </span>
                   </div>
-                  <span style={{
-                    padding: '4px 12px',
-                    borderRadius: '16px',
-                    fontSize: '12px',
-                    fontWeight: '700',
-                    background: '#f59e0b',
-                    color: 'white'
-                  }}>
-                    Fair
-                  </span>
-                </div>
-                <div style={{ fontSize: '13px', color: '#888', fontStyle: 'italic', marginBottom: item.notes ? '8px' : '0' }}>
-                  {ITEM_DESCRIPTIONS[item.itemName] || item.section}
-                </div>
-                {item.notes && (
-                  <div style={{
-                    background: 'white',
-                    padding: '12px',
-                    borderRadius: '8px',
-                    fontSize: '13px',
-                    border: '1px solid #d1d5db'
-                  }}>
-                    <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {item.notes}
+                  <div style={{ fontSize: '13px', color: '#888', fontStyle: 'italic', marginBottom: item.notes ? '8px' : '0' }}>
+                    {ITEM_DESCRIPTIONS[item.itemName] || item.section}
                   </div>
-                )}
-              </div>
-            ))}
+                  {item.notes && (
+                    <div style={{
+                      background: 'white',
+                      padding: '12px',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      border: '1px solid #d1d5db',
+                      marginBottom: '12px'
+                    }}>
+                      <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {item.notes}
+                    </div>
+                  )}
+                  {services.length > 0 && (
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
+                      {services.map(service => (
+                        <a
+                          key={service}
+                          href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}&name=${encodeURIComponent(report.customerName || '')}&phone=${encodeURIComponent(report.customerPhone || '')}&address=${encodeURIComponent(report.address || '')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '13px',
+                            padding: '8px 16px',
+                            background: '#2A54A1',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontWeight: '600',
+                            textDecoration: 'none',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          }}
+                        >
+                          Book {service}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -738,27 +819,7 @@ export default function HealthCheckReport() {
 
                 {(modalItem.rating === 'Fair' || modalItem.rating === 'Needs Attention') && (SERVICE_MAP[modalItem.itemName] || []).length > 0 && (
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {report.quoteLink ? (
-                      <a
-                        href={report.quoteLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          fontSize: '13px',
-                          padding: '8px 16px',
-                          background: '#2A54A1',
-                          color: 'white',
-                          borderRadius: '8px',
-                          fontWeight: '600',
-                          textDecoration: 'none',
-                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                        }}
-                      >
-                        View My Quote
-                      </a>
-                    ) : (SERVICE_MAP[modalItem.itemName] || []).map(service => (
+                    {(SERVICE_MAP[modalItem.itemName] || []).map(service => (
                       <a
                         key={service}
                         href={`https://handldhome.com/quote?service=${encodeURIComponent(service)}&name=${encodeURIComponent(report.customerName || '')}&phone=${encodeURIComponent(report.customerPhone || '')}&address=${encodeURIComponent(report.address || '')}`}
