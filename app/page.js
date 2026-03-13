@@ -104,8 +104,29 @@ function TechnicianForm() {
   // Pre-populate from jobId URL param (linked from scheduling tool)
   const searchParams = useSearchParams();
   useEffect(() => {
+    if (jobPrefilled) return;
+
+    // Support direct query params (from scheduling checklist)
+    const name = searchParams.get('customerName');
+    const address = searchParams.get('address');
+    const city = searchParams.get('city');
+    const tech = searchParams.get('techName');
+
+    if (name || address || tech) {
+      setCustomerInfo(prev => ({
+        customerName: name || prev.customerName,
+        customerEmail: prev.customerEmail,
+        address: address || prev.address,
+        city: city || prev.city || 'Pasadena',
+        technicianName: tech || prev.technicianName,
+      }));
+      setJobPrefilled(true);
+      return;
+    }
+
+    // Fallback: fetch from job API by jobId
     const jobId = searchParams.get('jobId');
-    if (!jobId || jobPrefilled) return;
+    if (!jobId) return;
 
     const fetchJob = async () => {
       try {
@@ -121,7 +142,6 @@ function TechnicianForm() {
           technicianName: job.technicianName || prev.technicianName,
         }));
         setJobPrefilled(true);
-        console.log('[Form] Pre-populated from job:', jobId);
       } catch (err) {
         console.error('[Form] Failed to fetch job for pre-fill:', err);
       }
