@@ -262,7 +262,18 @@ function TechnicianForm() {
   };
 
   const handlePhotoUpload = (taskNumber, files) => {
-    setTaskPhotos(prev => ({ ...prev, [taskNumber]: files }));
+    setTaskPhotos(prev => ({
+      ...prev,
+      [taskNumber]: [...(prev[taskNumber] || []), ...files]
+    }));
+  };
+
+  const handleRemovePhoto = (taskNumber, index) => {
+    setTaskPhotos(prev => {
+      const updated = [...(prev[taskNumber] || [])];
+      updated.splice(index, 1);
+      return { ...prev, [taskNumber]: updated };
+    });
   };
 
   const handleNextTask = () => {
@@ -988,16 +999,34 @@ function TechnicianForm() {
                 Photos (optional)
               </label>
               <input
-                key={`photo-${currentTask.number}`}
+                key={`photo-${currentTask.number}-${(taskPhotos[currentTask.number] || []).length}`}
                 type="file"
-                accept="image/*,video/*"
+                accept="image/*"
                 multiple
-                onChange={(e) => handlePhotoUpload(currentTask.number, Array.from(e.target.files))}
+                onChange={(e) => {
+                  if (e.target.files.length > 0) {
+                    handlePhotoUpload(currentTask.number, Array.from(e.target.files));
+                  }
+                }}
                 style={{ width: '100%', padding: '12px', border: '2px dashed #2A54A1', borderRadius: '8px', cursor: 'pointer' }}
               />
               {taskPhotos[currentTask.number] && taskPhotos[currentTask.number].length > 0 && (
-                <div style={{ marginTop: '8px', fontSize: '12px', color: '#10b981' }}>
-                  ✓ {taskPhotos[currentTask.number].length} file(s) selected
+                <div style={{ marginTop: '8px' }}>
+                  <div style={{ fontSize: '12px', color: '#10b981', marginBottom: '6px' }}>
+                    {taskPhotos[currentTask.number].length} photo(s) attached
+                  </div>
+                  {taskPhotos[currentTask.number].map((file, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 8px', background: '#f0f9ff', borderRadius: '6px', marginBottom: '4px', fontSize: '12px' }}>
+                      <span style={{ color: '#1e40af', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }}>{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePhoto(currentTask.number, idx)}
+                        style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', padding: '2px 8px', cursor: 'pointer', fontSize: '11px', flexShrink: 0 }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

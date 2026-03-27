@@ -74,9 +74,13 @@ function HealthCheckForm() {
   const [notes, setNotes] = useState({});
   const [generalNotes, setGeneralNotes] = useState('');
 
+  const [itemPhotos, setItemPhotos] = useState({});
+
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
 
   const handleCustomerInfoChange = (field, value) => {
     setCustomerInfo(prev => ({ ...prev, [field]: value }));
@@ -92,6 +96,103 @@ function HealthCheckForm() {
         return next;
       });
     }
+  };
+
+  const handlePhotoUpload = (itemNumber, files) => {
+    setItemPhotos(prev => ({
+      ...prev,
+      [itemNumber]: [...(prev[itemNumber] || []), ...files]
+    }));
+  };
+
+  const handleRemovePhoto = (itemNumber, index) => {
+    setItemPhotos(prev => {
+      const updated = [...(prev[itemNumber] || [])];
+      updated.splice(index, 1);
+      return { ...prev, [itemNumber]: updated };
+    });
+  };
+
+  const compressImage = (file) => {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith('image/')) {
+        resolve(file);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          const MAX_WIDTH = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > MAX_WIDTH) {
+            height = (height * MAX_WIDTH) / width;
+            width = MAX_WIDTH;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const MAX_FILE_SIZE = 500 * 1024;
+          const MIN_QUALITY = 0.2;
+          let quality = 0.7;
+
+          const tryCompress = () => {
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  reject(new Error('Failed to compress image'));
+                  return;
+                }
+
+                if (blob.size <= MAX_FILE_SIZE || quality <= MIN_QUALITY) {
+                  const compressedFile = new File([blob], file.name, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now(),
+                  });
+                  resolve(compressedFile);
+                } else {
+                  quality -= 0.05;
+                  tryCompress();
+                }
+              },
+              'image/jpeg',
+              quality
+            );
+          };
+
+          tryCompress();
+        };
+
+        img.onerror = () => reject(new Error('Failed to load image'));
+      };
+
+      reader.onerror = () => reject(new Error('Failed to read file'));
+    });
+  };
+
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve({
+        url: reader.result,
+        filename: file.name,
+        type: file.type,
+      });
+      reader.onerror = error => reject(error);
+    });
   };
 
   const handleSubmit = async () => {
@@ -135,6 +236,57 @@ function HealthCheckForm() {
         throw new Error(errorData.details || 'Failed to create report');
       }
 
+      const { reportId } = await response.json();
+
+      // Upload photos one by one
+      const photoUploadTasks = [];
+      CHECKLIST_ITEMS.forEach((item) => {
+        const photos = itemPhotos[item.number] || [];
+        photos.forEach((file) => {
+          photoUploadTasks.push({ itemNumber: item.number, file });
+        });
+      });
+
+      if (photoUploadTasks.length > 0) {
+        setUploadingPhotos(true);
+        setUploadProgress({ current: 0, total: photoUploadTasks.length });
+
+        const failedUploads = [];
+
+        for (let i = 0; i < photoUploadTasks.length; i++) {
+          const { itemNumber, file } = photoUploadTasks[i];
+
+          try {
+            setUploadProgress({ current: i + 1, total: photoUploadTasks.length });
+
+            const compressedFile = await compressImage(file);
+            const photoData = await convertFileToBase64(compressedFile);
+
+            const uploadResponse = await fetch(`/api/health-check/${reportId}/upload-photo`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ itemNumber, photo: photoData }),
+            });
+
+            if (!uploadResponse.ok) {
+              const errorData = await uploadResponse.json();
+              throw new Error(errorData.details || 'Failed to upload photo');
+            }
+
+          } catch (photoErr) {
+            console.error(`Failed to upload photo ${i + 1}:`, photoErr);
+            failedUploads.push({ itemNumber, file: file.name, error: photoErr.message });
+          }
+        }
+
+        setUploadingPhotos(false);
+
+        if (failedUploads.length > 0) {
+          console.warn('Some photos failed to upload:', failedUploads);
+          setError(`Report created, but ${failedUploads.length} photo(s) failed to upload.`);
+        }
+      }
+
       localStorage.removeItem(STORAGE_KEY);
       setSuccess(true);
 
@@ -146,6 +298,7 @@ function HealthCheckForm() {
       console.error('Submission error:', err);
       setError(err.message);
       setSubmitting(false);
+      setUploadingPhotos(false);
     }
   };
 
@@ -285,8 +438,11 @@ function HealthCheckForm() {
                 item={item}
                 rating={ratings[item.number]}
                 note={notes[item.number]}
+                photos={itemPhotos[item.number] || []}
                 onRate={(r) => handleRating(item.number, r)}
                 onNote={(n) => setNotes(prev => ({ ...prev, [item.number]: n }))}
+                onPhotoUpload={(files) => handlePhotoUpload(item.number, files)}
+                onRemovePhoto={(idx) => handleRemovePhoto(item.number, idx)}
               />
             ))}
           </div>
@@ -311,8 +467,11 @@ function HealthCheckForm() {
                 item={item}
                 rating={ratings[item.number]}
                 note={notes[item.number]}
+                photos={itemPhotos[item.number] || []}
                 onRate={(r) => handleRating(item.number, r)}
                 onNote={(n) => setNotes(prev => ({ ...prev, [item.number]: n }))}
+                onPhotoUpload={(files) => handlePhotoUpload(item.number, files)}
+                onRemovePhoto={(idx) => handleRemovePhoto(item.number, idx)}
               />
             ))}
           </div>
@@ -346,13 +505,38 @@ function HealthCheckForm() {
             </div>
           )}
 
+          {/* Photo Upload Progress */}
+          {uploadingPhotos && (
+            <div style={{
+              background: '#dbeafe',
+              border: '1px solid #3b82f6',
+              color: '#1e40af',
+              padding: '16px',
+              borderRadius: '8px',
+              marginBottom: '16px',
+              fontSize: '14px'
+            }}>
+              <div style={{ marginBottom: '8px', fontWeight: '600' }}>
+                Uploading photo {uploadProgress.current} of {uploadProgress.total}...
+              </div>
+              <div style={{ background: '#e0e0e0', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{
+                  background: '#2A54A1',
+                  height: '100%',
+                  width: `${(uploadProgress.current / uploadProgress.total) * 100}%`,
+                  transition: 'width 0.3s'
+                }} />
+              </div>
+            </div>
+          )}
+
           {/* Navigation */}
           <div style={{ display: 'flex', gap: '12px', marginBottom: '32px' }}>
             <button
               onClick={() => setCurrentStep('customer-info')}
               className="button"
               style={{ flex: 1, background: '#9ca3af' }}
-              disabled={submitting}
+              disabled={submitting || uploadingPhotos}
             >
               &larr; Back
             </button>
@@ -360,9 +544,13 @@ function HealthCheckForm() {
               onClick={handleSubmit}
               className="button"
               style={{ flex: 1, background: '#2A54A1' }}
-              disabled={submitting}
+              disabled={submitting || uploadingPhotos}
             >
-              {submitting ? 'Submitting...' : 'Submit Report'}
+              {uploadingPhotos
+                ? `Uploading ${uploadProgress.current}/${uploadProgress.total}...`
+                : submitting
+                  ? 'Submitting...'
+                  : 'Submit Report'}
             </button>
           </div>
         </div>
@@ -375,7 +563,7 @@ function HealthCheckForm() {
 
 // ── Checklist Item Card Component ─────────────────────────────────────────────
 
-function ChecklistItemCard({ item, rating, note, onRate, onNote }) {
+function ChecklistItemCard({ item, rating, note, photos, onRate, onNote, onPhotoUpload, onRemovePhoto }) {
   const ratingOptions = [
     { value: 'Good', label: '\u2705 Good', color: '#10b981', bg: '#d1fae5' },
     { value: 'Fair', label: '\u26a0\ufe0f Fair', color: '#f59e0b', bg: '#fef3c7' },
@@ -383,7 +571,7 @@ function ChecklistItemCard({ item, rating, note, onRate, onNote }) {
   ];
 
   const isSelected = (value) => rating === value;
-  const showNotes = rating === 'Fair' || rating === 'Needs Attention';
+  const showExtras = rating === 'Fair' || rating === 'Needs Attention';
 
   return (
     <div className="card" style={{ marginBottom: '12px' }}>
@@ -395,7 +583,7 @@ function ChecklistItemCard({ item, rating, note, onRate, onNote }) {
       </div>
 
       {/* Rating Buttons */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: showNotes ? '12px' : '0', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: showExtras ? '12px' : '0', flexWrap: 'wrap' }}>
         {ratingOptions.map(opt => (
           <button
             key={opt.value}
@@ -420,16 +608,52 @@ function ChecklistItemCard({ item, rating, note, onRate, onNote }) {
         ))}
       </div>
 
-      {/* Notes (shown when Fair or Needs Attention) */}
-      {showNotes && (
-        <input
-          type="text"
-          className="input"
-          placeholder="Notes (optional)"
-          value={note || ''}
-          onChange={(e) => onNote(e.target.value)}
-          style={{ marginBottom: '0' }}
-        />
+      {/* Notes + Photos (shown when Fair or Needs Attention) */}
+      {showExtras && (
+        <>
+          <textarea
+            className="textarea"
+            placeholder="Notes (optional) — tap mic on keyboard to dictate"
+            value={note || ''}
+            onChange={(e) => onNote(e.target.value)}
+            style={{ marginBottom: '8px', minHeight: '80px' }}
+          />
+
+          {/* Photo Upload */}
+          <div>
+            <input
+              key={`photo-${item.number}-${photos.length}`}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => {
+                if (e.target.files.length > 0) {
+                  onPhotoUpload(Array.from(e.target.files));
+                }
+              }}
+              style={{ width: '100%', padding: '10px', border: '2px dashed #2A54A1', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}
+            />
+            {photos.length > 0 && (
+              <div style={{ marginTop: '6px' }}>
+                <div style={{ fontSize: '12px', color: '#10b981', marginBottom: '4px' }}>
+                  {photos.length} photo(s) attached
+                </div>
+                {photos.map((file, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 8px', background: '#f0f9ff', borderRadius: '6px', marginBottom: '3px', fontSize: '12px' }}>
+                    <span style={{ color: '#1e40af', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }}>{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => onRemovePhoto(idx)}
+                      style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', padding: '2px 8px', cursor: 'pointer', fontSize: '11px', flexShrink: 0 }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );
