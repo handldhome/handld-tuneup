@@ -11,7 +11,7 @@ import {
   createQuoteFromHealthCheck,
 } from '../../../../lib/healthCheck'
 import { getDb } from '../../../../lib/supabase'
-import { cleanUpNotes } from '../../../../lib/cleanNotes'
+import { cleanUpNotes, cleanUpGeneralNotes } from '../../../../lib/cleanNotes'
 
 export async function POST(request) {
   try {
@@ -35,6 +35,7 @@ export async function POST(request) {
 
     // Clean up technician notes with Claude before saving
     const cleanedItems = await cleanUpNotes(items)
+    const cleanedGeneralNotes = await cleanUpGeneralNotes(notes)
     console.log('[HealthCheck API] Notes cleaned up')
 
     // Auto-calculate overall rating, priority items, and services
@@ -50,7 +51,7 @@ export async function POST(request) {
       address,
       techName,
       inspectionDate: inspectionDate || new Date().toISOString().split('T')[0],
-      notes: notes || '',
+      notes: cleanedGeneralNotes || '',
       overallRating,
       priorityItems,
       servicesRecommended,

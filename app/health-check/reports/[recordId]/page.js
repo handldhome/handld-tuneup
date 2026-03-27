@@ -412,6 +412,24 @@ export default function HealthCheckReport() {
                       <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {item.notes}
                     </div>
                   )}
+                  {item.photos && item.photos.length > 0 && (
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                      {item.photos.map((photo, idx) => {
+                        const photoUrl = photo.filename?.startsWith('CLOUDINARY_URL:')
+                          ? photo.filename.replace('CLOUDINARY_URL:', '')
+                          : photo.url;
+                        return (
+                          <a key={idx} href={photoUrl} target="_blank" rel="noopener noreferrer">
+                            <img
+                              src={photoUrl}
+                              alt={`Photo ${idx + 1}`}
+                              style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px', border: '2px solid white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}
+                            />
+                          </a>
+                        );
+                      })}
+                    </div>
+                  )}
                   {services.length > 0 && (
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
                       {services.map(service => (
@@ -493,6 +511,24 @@ export default function HealthCheckReport() {
                       marginBottom: '12px'
                     }}>
                       <strong style={{ color: '#2A54A1' }}>Technician Notes:</strong> {item.notes}
+                    </div>
+                  )}
+                  {item.photos && item.photos.length > 0 && (
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                      {item.photos.map((photo, idx) => {
+                        const photoUrl = photo.filename?.startsWith('CLOUDINARY_URL:')
+                          ? photo.filename.replace('CLOUDINARY_URL:', '')
+                          : photo.url;
+                        return (
+                          <a key={idx} href={photoUrl} target="_blank" rel="noopener noreferrer">
+                            <img
+                              src={photoUrl}
+                              alt={`Photo ${idx + 1}`}
+                              style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px', border: '2px solid white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}
+                            />
+                          </a>
+                        );
+                      })}
                     </div>
                   )}
                   {services.length > 0 && (
@@ -814,6 +850,38 @@ export default function HealthCheckReport() {
                     <p style={{ fontSize: '14px', color: '#9ca3af', fontStyle: 'italic' }}>
                       No additional notes from technician.
                     </p>
+                  </div>
+                )}
+
+                {/* Photos */}
+                {modalItem.photos && modalItem.photos.length > 0 && (
+                  <div style={{ marginBottom: '16px' }}>
+                    <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#2A54A1', marginBottom: '10px' }}>
+                      Photos ({modalItem.photos.length})
+                    </h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: modalItem.photos.length === 1 ? '1fr' : 'repeat(2, 1fr)', gap: '8px' }}>
+                      {modalItem.photos.map((photo, idx) => {
+                        const photoUrl = photo.filename?.startsWith('CLOUDINARY_URL:')
+                          ? photo.filename.replace('CLOUDINARY_URL:', '')
+                          : photo.url;
+                        return (
+                          <a key={idx} href={photoUrl} target="_blank" rel="noopener noreferrer">
+                            <img
+                              src={photoUrl}
+                              alt={`Photo ${idx + 1}`}
+                              style={{
+                                width: '100%',
+                                borderRadius: '8px',
+                                objectFit: 'cover',
+                                maxHeight: '300px',
+                                border: '1px solid #e5e7eb',
+                                cursor: 'pointer'
+                              }}
+                            />
+                          </a>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
 
