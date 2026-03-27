@@ -74,6 +74,7 @@ export default function HealthCheckReport() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalItem, setModalItem] = useState(null);
+  const [lightboxPhoto, setLightboxPhoto] = useState(null);
   const [quoteReady, setQuoteReady] = useState(false);
 
   useEffect(() => {
@@ -419,13 +420,13 @@ export default function HealthCheckReport() {
                           ? photo.filename.replace('CLOUDINARY_URL:', '')
                           : photo.url;
                         return (
-                          <a key={idx} href={photoUrl} target="_blank" rel="noopener noreferrer">
-                            <img
-                              src={photoUrl}
-                              alt={`Photo ${idx + 1}`}
-                              style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px', border: '2px solid white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}
-                            />
-                          </a>
+                          <img
+                            key={idx}
+                            src={photoUrl}
+                            alt={`Photo ${idx + 1}`}
+                            onClick={() => setLightboxPhoto(photoUrl)}
+                            style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px', border: '2px solid white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', cursor: 'pointer' }}
+                          />
                         );
                       })}
                     </div>
@@ -520,13 +521,13 @@ export default function HealthCheckReport() {
                           ? photo.filename.replace('CLOUDINARY_URL:', '')
                           : photo.url;
                         return (
-                          <a key={idx} href={photoUrl} target="_blank" rel="noopener noreferrer">
-                            <img
-                              src={photoUrl}
-                              alt={`Photo ${idx + 1}`}
-                              style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px', border: '2px solid white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }}
-                            />
-                          </a>
+                          <img
+                            key={idx}
+                            src={photoUrl}
+                            alt={`Photo ${idx + 1}`}
+                            onClick={() => setLightboxPhoto(photoUrl)}
+                            style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px', border: '2px solid white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', cursor: 'pointer' }}
+                          />
                         );
                       })}
                     </div>
@@ -865,20 +866,20 @@ export default function HealthCheckReport() {
                           ? photo.filename.replace('CLOUDINARY_URL:', '')
                           : photo.url;
                         return (
-                          <a key={idx} href={photoUrl} target="_blank" rel="noopener noreferrer">
-                            <img
-                              src={photoUrl}
-                              alt={`Photo ${idx + 1}`}
-                              style={{
-                                width: '100%',
-                                borderRadius: '8px',
-                                objectFit: 'cover',
-                                maxHeight: '300px',
-                                border: '1px solid #e5e7eb',
-                                cursor: 'pointer'
-                              }}
-                            />
-                          </a>
+                          <img
+                            key={idx}
+                            src={photoUrl}
+                            alt={`Photo ${idx + 1}`}
+                            onClick={() => setLightboxPhoto(photoUrl)}
+                            style={{
+                              width: '100%',
+                              borderRadius: '8px',
+                              objectFit: 'cover',
+                              maxHeight: '300px',
+                              border: '1px solid #e5e7eb',
+                              cursor: 'pointer'
+                            }}
+                          />
                         );
                       })}
                     </div>
@@ -973,6 +974,62 @@ export default function HealthCheckReport() {
             </a>
           </div>
         </div>
+
+        {/* Photo Lightbox */}
+        {lightboxPhoto && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.85)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 2000,
+              padding: '20px',
+            }}
+            onClick={() => setLightboxPhoto(null)}
+          >
+            <button
+              onClick={() => setLightboxPhoto(null)}
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: 'rgba(255,255,255,0.9)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                cursor: 'pointer',
+                fontSize: '24px',
+                color: '#333',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                zIndex: 2001,
+              }}
+            >
+              &times;
+            </button>
+            <img
+              src={lightboxPhoto}
+              alt="Full size"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                maxWidth: '90vw',
+                maxHeight: '85vh',
+                objectFit: 'contain',
+                borderRadius: '8px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+              }}
+            />
+          </div>
+        )}
 
         {/* Footer */}
         <div style={{
