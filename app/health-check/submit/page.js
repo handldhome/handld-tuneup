@@ -8,7 +8,7 @@ const CHECKLIST_ITEMS = [
   // Exterior (6 items)
   { number: 1, section: 'Exterior', name: 'Driveway, Walkways & Patio Surfaces', description: 'Staining, oil, moss, algae, cracks, or surface deterioration' },
   { number: 2, section: 'Exterior', name: 'Home Exterior & Entry', description: 'Walls, siding, steps \u2014 dirt buildup, mildew, oxidation, peeling paint' },
-  { number: 3, section: 'Exterior', name: 'Gutters & Downspouts', description: 'Debris, sagging, overflow staining, discharge point clear of pooling' },
+  { number: 3, section: 'Exterior', name: 'Gutters & Downspouts', description: 'Sagging, overflow staining, discharge point clear of pooling' },
   { number: 4, section: 'Exterior', name: 'Windows - Exterior', description: 'Glass cleanliness, screen condition, latch and hardware function' },
   { number: 5, section: 'Exterior', name: 'Outdoor Surfaces & Furniture', description: 'Bins, furniture, fabric or hard surfaces showing grime or mildew' },
   { number: 6, section: 'Exterior', name: 'Exterior Fixtures & Hardware', description: 'Lighting, door hardware, fence/gate latches \u2014 anything loose or broken' },
@@ -20,6 +20,12 @@ const CHECKLIST_ITEMS = [
   { number: 10, section: 'Interior', name: 'Electrical Panel', description: 'Labeled clearly, accessible, no tripped breakers, corrosion, or overcrowding' },
   { number: 11, section: 'Interior', name: 'Electrical Basics', description: 'GFCI outlets present and functional, smoke/CO detectors present and working' },
   { number: 12, section: 'Interior', name: 'General Interior Hardware', description: 'Cabinet hardware, door hinges, sticking doors, anything loose or broken' },
+
+  // Wildfire Readiness (4 items)
+  { number: 13, section: 'Wildfire Readiness', name: 'Gutters & Roof Debris', description: 'Gutters and roof free of dry leaves, pine needles, and debris that could catch embers' },
+  { number: 14, section: 'Wildfire Readiness', name: 'Defensible Space — Zone 0', description: 'No combustible materials (mulch, firewood, dried plants, debris) within 5 feet of walls, windows, or deck' },
+  { number: 15, section: 'Wildfire Readiness', name: 'Vent & Opening Screening', description: 'Attic, eave, and crawl space vents have fine mesh screening (1/8") to block embers' },
+  { number: 16, section: 'Wildfire Readiness', name: 'Deck & Fence Attachment', description: 'No combustible fencing or wood storage directly attached to or against the home' },
 ];
 
 const TECHNICIAN_OPTIONS = [
@@ -337,7 +343,7 @@ function HealthCheckForm() {
               Home Health Check
             </h1>
             <p style={{ marginBottom: '24px', color: '#666', fontSize: '14px' }}>
-              Free 12-point visual inspection
+              Free 16-point visual inspection
             </p>
 
             <form onSubmit={(e) => { e.preventDefault(); setCurrentStep('checklist'); }}>
@@ -395,6 +401,7 @@ function HealthCheckForm() {
     const completedCount = Object.keys(ratings).length;
     const exteriorItems = CHECKLIST_ITEMS.filter(i => i.section === 'Exterior');
     const interiorItems = CHECKLIST_ITEMS.filter(i => i.section === 'Interior');
+    const wildfireItems = CHECKLIST_ITEMS.filter(i => i.section === 'Wildfire Readiness');
 
     return (
       <div style={{ minHeight: '100vh', background: '#FBF7F0', padding: '20px' }}>
@@ -462,6 +469,48 @@ function HealthCheckForm() {
             </div>
 
             {interiorItems.map(item => (
+              <ChecklistItemCard
+                key={item.number}
+                item={item}
+                rating={ratings[item.number]}
+                note={notes[item.number]}
+                photos={itemPhotos[item.number] || []}
+                onRate={(r) => handleRating(item.number, r)}
+                onNote={(n) => setNotes(prev => ({ ...prev, [item.number]: n }))}
+                onPhotoUpload={(files) => handlePhotoUpload(item.number, files)}
+                onRemovePhoto={(idx) => handleRemovePhoto(item.number, idx)}
+              />
+            ))}
+          </div>
+
+          {/* Wildfire Readiness Section */}
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{
+              background: '#D97706',
+              color: 'white',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              marginBottom: '12px',
+              fontSize: '16px',
+              fontWeight: '700'
+            }}>
+              Wildfire Readiness
+            </div>
+
+            <div style={{
+              background: '#FEF3C7',
+              border: '1px solid #F59E0B',
+              borderRadius: '8px',
+              padding: '10px 14px',
+              marginBottom: '12px',
+              fontSize: '12px',
+              color: '#92400E',
+              lineHeight: '1.5',
+            }}>
+              Based on the <a href="https://www.readyforwildfire.org/prepare-for-wildfire/firewise-communities" target="_blank" rel="noopener noreferrer" style={{ color: '#D97706', fontWeight: '600', textDecoration: 'underline' }}>NFPA Firewise USA®</a> framework — quick visual check of wildfire preparedness basics.
+            </div>
+
+            {wildfireItems.map(item => (
               <ChecklistItemCard
                 key={item.number}
                 item={item}

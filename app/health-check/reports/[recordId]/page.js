@@ -17,6 +17,10 @@ const SERVICE_MAP = {
   'Electrical Panel': ['Handyman', 'Electrical Repairs'],
   'Electrical Basics': ['Electrical Repairs', 'Handyman'],
   'General Interior Hardware': ['Handyman'],
+  'Gutters & Roof Debris': ['Gutter Cleaning'],
+  'Defensible Space — Zone 0': ['Handyman'],
+  'Vent & Opening Screening': ['Handyman'],
+  'Deck & Fence Attachment': ['Handyman'],
 };
 
 const ITEM_DESCRIPTIONS = {
@@ -32,6 +36,10 @@ const ITEM_DESCRIPTIONS = {
   'Electrical Panel': 'Labeled clearly, accessible, no tripped breakers, corrosion, or overcrowding',
   'Electrical Basics': 'GFCI outlets present and functional, smoke/CO detectors present and working',
   'General Interior Hardware': 'Cabinet hardware, door hinges, sticking doors, anything loose or broken',
+  'Gutters & Roof Debris': 'Gutters and roof free of dry leaves, pine needles, and debris that could catch embers',
+  'Defensible Space — Zone 0': 'No combustible materials (mulch, firewood, dried plants, debris) within 5 feet of walls, windows, or deck',
+  'Vent & Opening Screening': 'Attic, eave, and crawl space vents have fine mesh screening (1/8") to block embers',
+  'Deck & Fence Attachment': 'No combustible fencing or wood storage directly attached to or against the home',
 };
 
 function getRatingColor(rating) {

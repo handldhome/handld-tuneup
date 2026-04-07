@@ -63,13 +63,18 @@ const SERVICE_ACTIONS = {
   "HVAC Filter Condition": { service: "Filter Replacement", link: "#", type: "Handld" },
   "HVAC System Age & Early Warning": { service: "HVAC Maintenance", link: "#", type: "Referral" },
   "Dryer Vent Fire Prevention": { service: "Dryer Vent Cleaning", link: "#", type: "Handld" },
-  "Attic Insulation Visual Check": { service: "Insulation Service", link: "#", type: "Referral" },
+  "Attic Insulation & Vent Screening": { service: "Insulation Service", link: "#", type: "Referral" },
   "Ventilation & Moisture": { service: "Ventilation Repair", link: "#", type: "Handld" },
   "Smoke Detector Functionality": { service: "Detector Replacement", link: "#", type: "Handld" },
   "Carbon Monoxide Detector Check": { service: "CO Detector Installation", link: "#", type: "Handld" },
   "Stairway Safety & Lighting": { service: "Safety Upgrades", link: "#", type: "Handld" },
   "Trip Hazard Scan": { service: "Handyman Service", link: "#", type: "Handld" },
   "Door Lock & Deadbolt Function": { service: "Lock Service", link: "#", type: "Handld" },
+  "Roof & Gutter Fire Resistance": { service: "Gutter Cleaning", link: "#", type: "Handld" },
+  "Defensible Space — Zone 0 (0–5 ft)": { service: "Defensible Space Clearing", link: "#", type: "Handld" },
+  "Defensible Space — Zone 1 (5–30 ft)": { service: "Landscaping Referral", link: "#", type: "Referral" },
+  "Deck & Patio Combustibility": { service: "Handyman Service", link: "#", type: "Handld" },
+  "Fencing & Attachments": { service: "Handyman Service", link: "#", type: "Handld" },
 };
 
 export default function ReportViewer() {

@@ -12,7 +12,7 @@ const TASKS = [
   { number: 4, section: "Exterior", name: "Home Exterior & Roof", description: "Inspect siding/stucco for dirt, algae, or mildew buildup. Check roof for debris accumulation", details: "• Check for algae/mildew on walls\n• Look for dirt accumulation\n• Inspect roof line for debris\n• Note any organic growth", tips: "Can often spot roof issues from ground with binoculars - don't need to climb" },
   { number: 5, section: "Exterior", name: "Walkway & Driveway Surface", description: "Check for algae, mildew or staining that creates slip hazards", details: "• Inspect all walkways\n• Check driveway surface\n• Look for slippery algae/mildew\n• Note trip hazards", tips: "Wet areas near sprinklers are most prone to algae growth" },
   { number: 6, section: "Exterior", name: "Exterior Security Lighting", description: "Test outdoor lighting to ensure proper illumination", details: "• Test all exterior lights\n• Check motion sensors\n• Note burned out bulbs\n• Verify adequate coverage", tips: "Test during daylight by covering motion sensors with hand" },
-  { number: 7, section: "Exterior", name: "Window & Door Weatherstripping", description: "Inspect weatherstripping and screens (torn/missing) around all exterior doors and windows. Check for drafts", details: "• Check weatherstripping condition\n• Inspect all window screens\n• Note torn or missing screens\n• Feel for drafts around doors", tips: "Run hand around door/window frames to feel for air leaks" },
+  { number: 7, section: "Exterior", name: "Window & Door Weatherstripping", description: "Inspect weatherstripping and screens (torn/missing) around all exterior doors and windows. Check for drafts", details: "• Check weatherstripping condition\n• Inspect all window screens\n• Note torn or missing screens\n• Feel for drafts around doors\n• Note window glazing type (single-pane vs dual-pane)", tips: "Run hand around door/window frames to feel for air leaks. Single-pane windows can break from radiant heat — dual-pane tempered is recommended for fire zones" },
   { number: 8, section: "Exterior", name: "Garage Door Safety Sensor", description: "Test auto-reverse safety mechanism", details: "• Place object in door path\n• Test auto-reverse function\n• Check sensor alignment\n• Note any issues", tips: "Use a cardboard box or roll of paper towels for testing - never use hand!" },
   
   // Electrical (4 tasks)
@@ -36,7 +36,7 @@ const TASKS = [
   { number: 22, section: "HVAC & Air Quality", name: "HVAC Filter Condition", description: "Check filter condition and note replacement needs", details: "• Locate HVAC filter\n• Remove and inspect\n• Note size if visible\n• Check for dirt/dust\n• Take photo of size label", tips: "Filters should be changed every 1-3 months depending on type" },
   { number: 23, section: "HVAC & Air Quality", name: "HVAC System Age & Early Warning", description: "Note system age and unusual noises", details: "• Check for manufacturing date\n• Listen to system running\n• Note any strange noises\n• Check for rust on outdoor unit\n• Note if system is oversized/undersized for home", tips: "Most HVAC systems last 15-20 years" },
   { number: 24, section: "HVAC & Air Quality", name: "Dryer Vent Fire Prevention", description: "Inspect dryer vent for lint buildup", details: "• Check dryer vent opening\n• Pull out visible lint\n• Note vent material (flexible = bad)\n• Check exterior vent flap\n• Test dryer efficiency", tips: "Lint buildup is major fire hazard - critical safety item" },
-  { number: 25, section: "HVAC & Air Quality", name: "Attic Insulation Visual Check", description: "Inspect attic for adequate insulation coverage (if accessible)", details: "• Safely access attic opening\n• Shine light to inspect\n• Look for even coverage\n• Note any gaps or thin spots\n• Check for moisture/mold", tips: "Don't enter attic if unsafe - just visual check from opening" },
+  { number: 25, section: "HVAC & Air Quality", name: "Attic Insulation & Vent Screening", description: "Inspect attic for adequate insulation coverage and check vent screening (if accessible)", details: "• Safely access attic opening\n• Shine light to inspect insulation\n• Look for even coverage\n• Note any gaps or thin spots\n• Check for moisture/mold\n• Check attic, eave, and crawl space vents for fine mesh screening (1/8 inch) to block embers", tips: "Don't enter attic if unsafe - just visual check from opening. Embers enter through unscreened vents more than any other way" },
   { number: 26, section: "HVAC & Air Quality", name: "Ventilation & Moisture", description: "Check bathroom exhaust fans work properly. Look for condensation on windows", details: "• Test all bathroom fans\n• Check kitchen vent fan\n• Look for window condensation\n• Note any musty odors\n• Check for visible mold", tips: "Poor ventilation leads to mold - important to catch early" },
   
   // Safety Systems (5 tasks)
@@ -45,6 +45,15 @@ const TASKS = [
   { number: 29, section: "Safety Systems", name: "Stairway Safety & Lighting", description: "Check stair lighting and railing stability", details: "• Test stair lighting\n• Check light switch location\n• Shake railing for stability\n• Look for loose balusters\n• Note any trip hazards on stairs", tips: "Stair falls are leading cause of home injuries - important safety check" },
   { number: 30, section: "Safety Systems", name: "Trip Hazard Scan", description: "Look for loose rugs, cords, or uneven flooring", details: "• Walk through all rooms\n• Check for loose rugs\n• Note extension cords across walkways\n• Look for uneven flooring\n• Check door thresholds", tips: "Focus on high-traffic areas and paths to bathrooms (nighttime risk)" },
   { number: 31, section: "Safety Systems", name: "Door Lock & Deadbolt Function", description: "Test all exterior door locks and deadbolts operate smoothly", details: "• Test every exterior door\n• Check lock operation\n• Test deadbolt smoothness\n• Note any sticking\n• Check strike plate alignment", tips: "Sticking locks often just need lubrication - easy fix" },
+
+  // Firewise Home Assessment (6 tasks)
+  // Note: Vent screening folded into #25, window glazing folded into #7
+  { number: 32, section: "Firewise Home Assessment", name: "Roof & Gutter Fire Resistance", description: "Inspect roof material rating and check gutters/roof for accumulated combustible debris", details: "• Note roof material type (tile, asphalt, wood shake)\n• Check for Class A fire rating if visible\n• Inspect gutters for dry leaves, needles, debris\n• Look for debris accumulation in roof valleys\n• Check for overhanging branches touching roof", tips: "Wood shake roofs are highest risk — note for customer. Clean gutters are critical ember defense" },
+  { number: 33, section: "Firewise Home Assessment", name: "Defensible Space — Zone 0 (0–5 ft)", description: "Check for combustible materials within 5 feet of walls, windows, deck, and porch", details: "• Walk full perimeter of home\n• Look for dry mulch, firewood, or lumber against walls\n• Check for dried leaves/debris against foundation\n• Verify no flammable plants directly against structure\n• Check under porches and decks for stored items", tips: "Anything that can burn within 5 feet of the home is the #1 ignition risk during wildfire" },
+  { number: 34, section: "Firewise Home Assessment", name: "Defensible Space — Zone 1 (5–30 ft)", description: "Assess vegetation spacing, ladder fuels, and clearance around structures", details: "• Check grass height (should be under 4 inches)\n• Look for 'ladder fuels' — low brush connecting to tree canopy\n• Verify tree branches pruned 6–10 ft from ground\n• Check tree crown spacing (18+ ft apart)\n• Ensure tree canopy is 10+ ft from structure edge", tips: "Ladder fuels let ground fire climb into tree canopy — break the chain" },
+  { number: 35, section: "Firewise Home Assessment", name: "Deck & Patio Combustibility", description: "Assess deck/patio materials and check underside enclosure", details: "• Note deck material (wood, composite, concrete)\n• Check if deck underside is enclosed or open\n• Look for debris accumulation under deck\n• Check for combustible furniture or storage on/under deck\n• Note any lattice or decorative wood on deck perimeter", tips: "Open deck undersides trap embers — enclosing with 1/8 inch metal mesh is a key fix" },
+  { number: 36, section: "Firewise Home Assessment", name: "Fencing & Attachments", description: "Check if combustible fencing connects directly to the home", details: "• Note fence material where it attaches to house\n• Check first 5 feet of fencing from structure\n• Look for wood gates attached to home\n• Note any trellis or arbors against exterior walls\n• Check for vine-covered structures against home", tips: "A burning fence is a fuse to the house — first 5 ft from home should be non-combustible (metal, stone)" },
+  { number: 37, section: "Firewise Home Assessment", name: "Propane & Fuel Storage", description: "Verify propane tanks and fuel storage have vegetation clearance", details: "• Locate propane tanks or fuel storage\n• Check for 10-ft vegetation clearance around tanks\n• Note if tank area has gravel/non-combustible ground cover\n• Check for any gasoline or fuel can storage locations\n• Verify fuel storage is away from structure", tips: "Propane tanks should have 10 ft cleared around them — gravel ground cover is ideal" },
 ];
 
 const SECTIONS = [
@@ -52,7 +61,8 @@ const SECTIONS = [
   "Electrical",
   "Plumbing",
   "HVAC & Air Quality",
-  "Safety Systems"
+  "Safety Systems",
+  "Firewise Home Assessment"
 ];
 
 const TECHNICIAN_OPTIONS = [
@@ -571,7 +581,7 @@ function TechnicianForm() {
               Home TuneUp Check
             </h1>
             <p style={{ marginBottom: '24px', color: '#666', fontSize: '14px' }}>
-              Complete the 31-point inspection
+              Complete the 37-point inspection
             </p>
 
             <form onSubmit={handleCustomerInfoSubmit}>
@@ -891,16 +901,31 @@ function TechnicianForm() {
           {/* Task Card */}
           <div className="card">
             <div style={{ 
-              background: '#2A54A1', 
-              color: 'white', 
-              padding: '12px 16px', 
-              borderRadius: '8px', 
+              background: currentTask.section === 'Firewise Home Assessment' ? '#D97706' : '#2A54A1',
+              color: 'white',
+              padding: '12px 16px',
+              borderRadius: '8px',
               marginBottom: '16px',
               fontSize: '14px',
               fontWeight: '600'
             }}>
               {currentTask.section}
             </div>
+
+            {currentTask.section === 'Firewise Home Assessment' && (
+              <div style={{
+                background: '#FEF3C7',
+                border: '1px solid #F59E0B',
+                borderRadius: '8px',
+                padding: '8px 12px',
+                marginBottom: '12px',
+                fontSize: '12px',
+                color: '#92400E',
+                lineHeight: '1.4',
+              }}>
+                Powered by <a href="https://www.readyforwildfire.org/prepare-for-wildfire/firewise-communities" target="_blank" rel="noopener noreferrer" style={{ color: '#D97706', fontWeight: '700', textDecoration: 'underline' }}>NFPA Firewise USA®</a> — the national wildfire preparedness standard
+              </div>
+            )}
 
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '8px', color: '#2A54A1' }}>
               #{currentTask.number}: {currentTask.name}
