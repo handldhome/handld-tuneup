@@ -1,5 +1,5 @@
 // app/api/master-tasks/route.js
-// API endpoint to fetch master task list from Airtable
+// API endpoint to fetch the master task list
 
 import { getMasterTasks } from '../../../lib/db';
 

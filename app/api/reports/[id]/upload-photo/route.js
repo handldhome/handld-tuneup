@@ -32,16 +32,16 @@ export async function POST(request, { params }) {
     const publicUrl = await uploadBase64Image(photo.url, photo.filename);
     console.log('[API] Cloudinary upload successful:', publicUrl);
 
-    // Step 2: Save public URL to Airtable
-    // Embed Cloudinary URL in filename so we can extract it later (Airtable converts attachment URLs to temporary ones)
-    const photoForAirtable = {
+    // Step 2: Save public URL to the task record
+    // Embed Cloudinary URL in filename so we can extract it later
+    const photoRecord = {
       url: publicUrl,
       filename: `CLOUDINARY_URL:${publicUrl}`,
     };
 
-    const result = await uploadPhotoToTask(reportId, taskNumber, photoForAirtable);
+    const result = await uploadPhotoToTask(reportId, taskNumber, photoRecord);
 
-    console.log(`[API] Photo saved to Airtable for task ${taskNumber}`);
+    console.log(`[API] Photo saved for task ${taskNumber}`);
 
     return Response.json({
       success: true,
